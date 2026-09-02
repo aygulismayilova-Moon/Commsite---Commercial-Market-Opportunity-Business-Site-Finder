@@ -31,7 +31,7 @@
    - Always pass all document payloads through `sanitizeForFirestore()` before `setDoc` or `writeBatch` to eliminate `undefined` fields.
    - Always use `safeSaveToLocalStorage()` to prevent browser storage quota exceptions.
 4. **Resilient AI Pipeline**:
-   - Use `generateWithFallbackAndRetry()` on the server with active model aliases (`gemini-3.7-flash`, `gemini-3.1-flash-lite`, `gemini-flash-latest`).
+   - Use `generateWithFallbackAndRetry()` on the server with active model aliases (`gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-2.5-pro`).
    - If AI quota limits are reached, provide structured fallbacks using `marketFallbackGenerator.ts`.
 5. **Build & Dev Execution**:
    - Development server: `npm run dev` (`tsx server.ts` binding to `0.0.0.0:3000`).

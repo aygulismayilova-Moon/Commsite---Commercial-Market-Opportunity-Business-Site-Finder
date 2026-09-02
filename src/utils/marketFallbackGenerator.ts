@@ -28,8 +28,27 @@ export function getSectorCompetitorTemplates(
 
   // Check if static catalog has pre-verified real competitors for this city and sector
   const cleanNorm = normalizedCity.replace(/\(.*?\)/g, '').trim();
-  const catalogCity = REAL_WORLD_CITIES_CATALOG[normalizedCity] || REAL_WORLD_CITIES_CATALOG[cleanNorm] || (cleanNorm === 'adam' || cleanNorm === 'agdam' || cleanNorm === 'ağdam' || cleanNorm === 'aghdam' ? REAL_WORLD_CITIES_CATALOG['agdam'] : undefined);
+  const strippedAccent = cleanNorm
+    .replace(/ğ/g, 'g')
+    .replace(/ə/g, 'e')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ç/g, 'c');
+
+  const catalogCity = REAL_WORLD_CITIES_CATALOG[normalizedCity] ||
+    REAL_WORLD_CITIES_CATALOG[cleanNorm] ||
+    REAL_WORLD_CITIES_CATALOG[strippedAccent] ||
+    (cleanNorm === 'adam' || cleanNorm === 'agdam' || cleanNorm === 'ağdam' || cleanNorm === 'aghdam' ? REAL_WORLD_CITIES_CATALOG['agdam'] : undefined) ||
+    (cleanNorm === 'agsu' || cleanNorm === 'ağsu' || cleanNorm === 'aghsu' ? REAL_WORLD_CITIES_CATALOG['agsu'] : undefined);
   if (catalogCity && catalogCity.realCompetitorsBySector) {
+    if ((s.includes('bakery') || s.includes('bread') || s.includes('pastry') || s.includes('təndir') || s.includes('tandir') || s.includes('şirniyyat') || s.includes('sirniyyat') || s.includes('qənnadı') || s.includes('qennadi') || s.includes('çörək') || s.includes('cake') || s.includes('patisserie')) && catalogCity.realCompetitorsBySector.bakery) {
+      return catalogCity.realCompetitorsBySector.bakery;
+    }
+    if ((s.includes('retail') || s.includes('supermarket') || s.includes('mall') || s.includes('hypermarket') || s.includes('grocery')) && catalogCity.realCompetitorsBySector.retail) {
+      return catalogCity.realCompetitorsBySector.retail;
+    }
     if ((s.includes('bank') || s.includes('atm') || s.includes('financial') || s.includes('credit') || s.includes('wealth') || s.includes('fintech')) && catalogCity.realCompetitorsBySector.bank) {
       return catalogCity.realCompetitorsBySector.bank;
     }
@@ -39,15 +58,35 @@ export function getSectorCompetitorTemplates(
     if ((s.includes('food') || s.includes('dining') || s.includes('restaurant') || s.includes('bistro') || s.includes('grill')) && catalogCity.realCompetitorsBySector.dining) {
       return catalogCity.realCompetitorsBySector.dining;
     }
-    if ((s.includes('coffee') || s.includes('cafe') || s.includes('bakery') || s.includes('tea') || s.includes('roast')) && catalogCity.realCompetitorsBySector.coffee) {
+    if ((s.includes('coffee') || s.includes('cafe') || s.includes('tea') || s.includes('roast')) && catalogCity.realCompetitorsBySector.coffee) {
       return catalogCity.realCompetitorsBySector.coffee;
     }
   }
 
+  const isAze = cleanNorm === 'agsu' || cleanNorm === 'ağsu' || cleanNorm === 'aghsu' || strippedAccent === 'agsu' ||
+    cleanNorm === 'agdam' || cleanNorm === 'ağdam' || cleanNorm === 'adam' || cleanNorm === 'aghdam' || strippedAccent === 'agdam' ||
+    cleanNorm === 'baku' || cleanNorm === 'bakı' || cleanNorm === 'ganja' || cleanNorm === 'gəncə' ||
+    cleanNorm === 'sumqayit' || cleanNorm === 'sumqayıt' || cleanNorm === 'shusha' || cleanNorm === 'şuşa' ||
+    cleanNorm === 'mingachevir' || cleanNorm === 'mingəçevir' || cleanNorm === 'shaki' || cleanNorm === 'şəki' ||
+    cleanNorm === 'quba' || cleanNorm === 'lankaran' || cleanNorm === 'lənkəran' || cleanNorm === 'khachmaz' ||
+    cleanNorm === 'xaçmaz' || cleanNorm === 'qusar' || cleanNorm === 'khankendi' || cleanNorm === 'xankəndi' ||
+    cleanNorm === 'lachin' || cleanNorm === 'laçın' || cleanNorm === 'fizuli' || cleanNorm === 'füzuli' ||
+    cleanNorm === 'jabrayil' || cleanNorm === 'cəbrayıl' || cleanNorm === 'zangilan' || cleanNorm === 'zəngilan' ||
+    cleanNorm === 'gubadli' || cleanNorm === 'qubadli' || cleanNorm === 'qubadlı' || cleanNorm === 'kalbajar' ||
+    cleanNorm === 'kəlbəcər' || cleanNorm === 'barda' || cleanNorm === 'bərdə' || cleanNorm === 'tartar' ||
+    cleanNorm === 'tərtər' || cleanNorm === 'aghjabadi' || cleanNorm === 'ağcabədi' || cleanNorm === 'agdash' ||
+    cleanNorm === 'ağdaş' || cleanNorm === 'goychay' || cleanNorm === 'göyçay' || cleanNorm === 'ismayilli' ||
+    cleanNorm === 'ismayıllı' || cleanNorm === 'shamakhi' || cleanNorm === 'şamaxı' || cleanNorm === 'gabala' ||
+    cleanNorm === 'qabala' || cleanNorm === 'qəbələ' || cleanNorm === 'naftalan' || cleanNorm === 'yevlakh' ||
+    cleanNorm === 'yevlax' || cleanNorm === 'goygol' || cleanNorm === 'göygöl' || cleanNorm === 'shirvan' ||
+    cleanNorm === 'şirvan' || cleanNorm === 'nakhchivan' || cleanNorm === 'naxçıvan';
+
+  const isTr = cleanNorm === 'istanbul' || cleanNorm === 'ankara' || cleanNorm === 'izmir' ||
+    cleanNorm === 'bursa' || cleanNorm === 'antalya' || cleanNorm === 'adana' ||
+    cleanNorm === 'gaziantep' || cleanNorm === 'konya' || cleanNorm === 'trabzon' || cleanNorm === 'bodrum';
+
   // 1. Banking, ATM Centers, Financial Services & Wealth Management
   if (s.includes('bank') || s.includes('atm') || s.includes('financial') || s.includes('credit') || s.includes('wealth') || s.includes('fintech') || s.includes('investment') || s.includes('mortgage') || s.includes('accounting') || s.includes('tax') || s.includes('insurance') || s.includes('asset management')) {
-    const isAze = normalizedCity === 'agdam' || normalizedCity === 'adam' || normalizedCity === 'baku' || normalizedCity === 'ganja' || normalizedCity === 'sumqayit' || normalizedCity === 'shusha' || normalizedCity === 'mingachevir' || normalizedCity === 'shaki' || normalizedCity === 'quba' || normalizedCity === 'lankaran';
-    const isTr = normalizedCity === 'istanbul' || normalizedCity === 'ankara' || normalizedCity === 'izmir' || normalizedCity === 'bursa' || normalizedCity === 'antalya';
 
     if (isAze) {
       return [
@@ -87,13 +126,30 @@ export function getSectorCompetitorTemplates(
     ];
   }
 
-  // 2. Specialty Cafes, Bakeries & Tea
-  if (s.includes('coffee') || s.includes('cafe') || s.includes('bakery') || s.includes('boba') || s.includes('tea') || s.includes('pastry') || s.includes('roast')) {
+  // 2. Specialty Bakeries, Patisseries, Cafes & Tea
+  if (s.includes('coffee') || s.includes('cafe') || s.includes('bakery') || s.includes('boba') || s.includes('tea') || s.includes('pastry') || s.includes('roast') || s.includes('təndir') || s.includes('tandir') || s.includes('şirniyyat') || s.includes('sirniyyat') || s.includes('qənnadı') || s.includes('bread') || s.includes('çörək')) {
+    if (isAze) {
+      return [
+        { name: `${city} Şirniyyat & Çörək Evi (Təndir & Qənnadı)`, address: `${st0} No:18, ${city}`, neighborhood: 'Mərkəzi Kvartal', rating: 4.8, reviews: 760, priceLevel: 2, strengths: ['Təzə xırçıltılı təndir çörəyi, şorqoğalı və milli paxlava çeşidləri', 'Mərkəzi küçədə yüksək piyada axını'], vulnerabilities: ['Səhər və axşam pik saatlarında növbələr'] },
+        { name: `Qarabağ Təndir Evi & Ətirli Şirniyyat Mərkəzi - ${city}`, address: `${st1} No:14, ${city}`, neighborhood: 'Ticarət Koridoru', rating: 4.7, reviews: 620, priceLevel: 2, strengths: ['Ənənəvi daş soba çörəkləri və fəsəli', 'Sürətli paket xidməti'], vulnerabilities: ['Məhdud oturacaq sahəsi'] },
+        { name: `${city} Qənnadı & Butik Tort Evi`, address: `${st2} No:9, ${city}`, neighborhood: 'Mədəniyyət Parkı Yanı', rating: 4.9, reviews: 490, priceLevel: 3, strengths: ['Xüsusi reseptlərlə hazırlanan premium tortlar və şirniyyatlar', 'Fərdi sifarişlər üçün usta şirniyyatçılar'], vulnerabilities: ['Öncədən sifariş tələb olunur'] },
+        { name: `${city} Çörəkbişirmə & Bulka İstehsalatı Mərkəzi`, address: `${st3} No:5, ${city}`, neighborhood: 'Logistika Zonası', rating: 4.6, reviews: 580, priceLevel: 1, strengths: ['Müasir avtomatlaşdırılmış un məmulatları xətti', 'Həm pərakəndə həm topdansatış təminatı'], vulnerabilities: ['Əsasən standart çörək sortlarına fokuslanır'] },
+      ];
+    }
+
+    if (isTr) {
+      return [
+        { name: `${city} Tarihi Odun Fırını & Taş Ekmek Evi`, address: `${st0} No:18, ${city}`, neighborhood: 'Merkez Çarşı', rating: 4.8, reviews: 1450, priceLevel: 2, strengths: ['Geleneksel ekşi mayalı taş fırın ekmekleri ve sıcak simit', 'Sabah saatlerinde yüksek müşteri sirkülasyonu'], vulnerabilities: ['Sabah kahvaltı saatlerinde sıra oluşması'] },
+        { name: `${city} Gurme Butik Pastanesi & Cafe`, address: `${st1} No:24, ${city}`, neighborhood: 'Moda Aksı', rating: 4.7, reviews: 1120, priceLevel: 3, strengths: ['Taze Fransız kruvasanları, yaş pastalar ve sıcak kahve servisi', 'Şık bahçe oturma alanı'], vulnerabilities: ['Hafta sonları masa bulma zorluğu'] },
+        { name: `${city} Simit & Börek Sarayı`, address: `${st2} No:42, ${city}`, neighborhood: 'İstasyon Caddesi', rating: 4.6, reviews: 980, priceLevel: 1, strengths: ['Hızlı al-götür servisi ve taze demlik çay', 'Uygun fiyat politikası'], vulnerabilities: ['Kompakt iç mekan'] },
+      ];
+    }
+
     return [
-      { name: `${city} Specialty Artisan Roast & Brew Lab`, address: `${st0} No:28, ${city}`, neighborhood: 'Market Quarter', rating: 4.8, reviews: 3400, priceLevel: 2, strengths: ['Direct trade single-origin beans', 'Iconic local brand loyalty'], vulnerabilities: ['Zero indoor laptop seating during morning rush', 'Frequent queue walk-aways'] },
-      { name: `The ${city} Heritage Espresso & Kitchen`, address: `${st1} No:15, ${city}`, neighborhood: 'Historic Square', rating: 4.7, reviews: 1850, priceLevel: 2, strengths: ['Architectural design aesthetic', 'High corporate takeaway spend'], vulnerabilities: ['Premium price point creates friction for student demographics', 'Off-peak weekday lulls'] },
+      { name: `${city} Artisan Bakery, Patisserie & Sourdough Lab`, address: `${st0} No:28, ${city}`, neighborhood: 'Market Quarter', rating: 4.8, reviews: 3400, priceLevel: 2, strengths: ['Fresh stone-baked sourdough & artisan pastries', 'Iconic local neighborhood loyalty'], vulnerabilities: ['Zero indoor laptop seating during morning rush', 'Frequent queue walk-aways'] },
+      { name: `The ${city} Heritage Espresso & Bakehouse`, address: `${st1} No:15, ${city}`, neighborhood: 'Historic Square', rating: 4.7, reviews: 1850, priceLevel: 2, strengths: ['Architectural design aesthetic', 'High corporate takeaway spend'], vulnerabilities: ['Premium price point creates friction for student demographics', 'Off-peak weekday lulls'] },
       { name: `Artisan Bakery & Patisserie ${city}`, address: `${st2} No:92, ${city}`, neighborhood: 'Downtown Promenade', rating: 4.5, reviews: 2600, priceLevel: 2, strengths: ['Authentic fresh pastry displays', 'Consistent high-speed service'], vulnerabilities: ['Seating bottlenecks during weekend brunch hours', 'Pre-packaged food perception'] },
-      { name: `${city} Riverside Botanical Coffee House`, address: `${st3} No:5, ${city}`, neighborhood: 'Riverside Walk', rating: 4.6, reviews: 2100, priceLevel: 3, strengths: ['Minimalist aesthetic', 'High average bean bag retail checkout'], vulnerabilities: ['Long pour-over wait times', 'Limited hot food menu options'] },
+      { name: `${city} Botanical Coffee & Pastry House`, address: `${st3} No:5, ${city}`, neighborhood: 'Riverside Walk', rating: 4.6, reviews: 2100, priceLevel: 3, strengths: ['Minimalist aesthetic', 'High average bean bag retail checkout'], vulnerabilities: ['Long pour-over wait times', 'Limited hot food menu options'] },
     ];
   }
 

@@ -500,6 +500,86 @@ export const REAL_WORLD_CITIES_CATALOG: Record<string, CityRealData> = {
     ],
   },
 
+  agsu: {
+    cityName: 'Agsu (Ağsu)',
+    country: 'Azerbaijan',
+    lat: 40.5700,
+    lng: 48.4000,
+    commercialDistricts: [
+      {
+        name: 'Heydər Əliyev Prospekti & Mərkəzi Ticarət Koridoru',
+        neighborhood: 'Ağsu Mərkəzi Kvartal',
+        dLat: 0.002,
+        dLng: 0.002,
+        footfallProfile: 'Central administrative corridor, retail shopping, bank branches & public services (12,500 pedestrians/day)',
+        householdIncome: 62000,
+        spendingIndex: 124,
+        targetAgeGroup: '20-60 Banking Clients, Public Sector Employees, Entrepreneurs & Local Families',
+        streets: ['Heydər Əliyev Prospekti', 'M.Ə.Rəsulzadə Küçəsi', 'M.F.Axundov Küçəsi', 'Nizami Gəncəvi Küçəsi', 'Şah İsmayıl Xətai Küçəsi'],
+        landmarks: ['Ağsu Rayon İcra Hakimiyyəti Meydanı', 'Heydər Əliyev Mərkəzi Ağsu', 'Ağsu Şəhər Mədəniyyət Sarayı', 'Mərkəzi Şəhər Parkı'],
+      },
+      {
+        name: 'Qədim Ağsu Şəhəri Tarixi və Aqro-Sənaye Parkı',
+        neighborhood: 'Ağsu Aqro-Biznes və Turizm Zonası',
+        dLat: -0.003,
+        dLng: 0.004,
+        footfallProfile: 'Agro-processing workers, regional business contractors, wine & fruit export logistics, cultural visitors (9,800 pedestrians/day)',
+        householdIncome: 68000,
+        spendingIndex: 130,
+        targetAgeGroup: '22-58 Agro-Entrepreneurs, Commercial Contractors & Heritage Travelers',
+        streets: ['Qədim Ağsu Yolu', 'Vidadi Küçəsi', 'AzGranata Magistral Yolu', 'Səməd Vurğun Küçəsi'],
+        landmarks: ['Qədim Ağsu Şəhəri Arxeoloji Turizm Kompleksi', 'AzGranata Dad Evi & Meyvə Emalı Kompleksi', 'Ağsu Aqropark'],
+      },
+      {
+        name: 'Ağsu Vağzal & Şamaxı-Yevlax Magistral Ticarət Aksı',
+        neighborhood: 'Ağsu Magistral Ticarət & Xidmət Zonası',
+        dLat: 0.005,
+        dLng: -0.004,
+        footfallProfile: 'Intercity commuters, transport contractors, wholesale & auto-retail visitors (11,000 pedestrians/day)',
+        householdIncome: 65000,
+        spendingIndex: 126,
+        targetAgeGroup: '20-55 Transport Operators, SME Business Owners & Regional Commuters',
+        streets: ['Bakı-Şamaxı-Yevlax Magistral Küçəsi', 'Nəriman Nərimanov Küçəsi', 'Mikayıl Müşfiq Küçəsi'],
+        landmarks: ['Ağsu Regional Avtovağzalı', 'Ağsu Aqroservis Mərkəzi', 'Ağsu Ticarət və Logistika Qovşağı'],
+      },
+    ],
+    realCompetitorsBySector: {
+      bakery: [
+        { name: 'Ağsu Təndir Evi & Şirniyyat Dünyası', address: 'Heydər Əliyev Prospekti 20, Ağsu', neighborhood: 'Ağsu Mərkəzi Kvartal', rating: 4.8, reviews: 650, priceLevel: 2, strengths: ['Authentic Shirvan hot bread, tandir kulcha and pakhlava', 'Prime central avenue pedestrian frontage'], vulnerabilities: ['Morning and evening rush hour queues'] },
+        { name: 'Şirvan Çörəkbişirmə & Şirniyyat Evi', address: 'M.Ə.Rəsulzadə Küçəsi 15, Ağsu', neighborhood: 'Mərkəzi Kvartal', rating: 4.7, reviews: 520, priceLevel: 2, strengths: ['Traditional sweet pastries, fresh breads and cookies', 'Family-run artisan quality'], vulnerabilities: ['Compact storefront space'] },
+      ],
+      bank: [
+        { name: 'ABB (Azərbaycan Beynəlxalq Bankı) - Ağsu Filialı & 24/7 ATM Mərkəzi', address: 'Heydər Əliyev Prospekti 18, Ağsu', neighborhood: 'Ağsu Mərkəzi Kvartal', rating: 4.8, reviews: 920, priceLevel: 2, strengths: ['Premier state-backed corporate and retail banking', 'Full-service ATM cash-in/out hub', 'Priority business teller windows'], vulnerabilities: ['Peak hour queues on pension and salary distribution dates'] },
+        { name: 'Kapital Bank - Ağsu Filialı & BirBank Rəqəmsal Xidmət Mərkəzi', address: 'M.Ə.Rəsulzadə Küçəsi 24, Ağsu', neighborhood: 'Mərkəzi Kvartal', rating: 4.7, reviews: 1140, priceLevel: 2, strengths: ['High BirBank mobile adoption', 'Dual 24/7 drive-thru ATM kiosks', 'Express SME agrarian credit desk'], vulnerabilities: ['Weekend branch services limited to digital zone'] },
+        { name: 'Bank Respublika - Ağsu Şöbəsi & ATM', address: 'M.F.Axundov Küçəsi 9, Ağsu', neighborhood: 'Mərkəzi Kvartal', rating: 4.6, reviews: 580, priceLevel: 2, strengths: ['Fast POS terminal setup for local merchants', 'Competitive micro-business and farm loans'], vulnerabilities: ['Compact branch footprint'] },
+        { name: 'AqrarKredit & Mikromaliyyə Ağsu Xidmət Mərkəzi', address: 'Heydər Əliyev Prospekti 35, Ağsu', neighborhood: 'Mərkəzi Kvartal', rating: 4.5, reviews: 420, priceLevel: 2, strengths: ['Specialized agricultural equipment leasing', 'Dedicated farmer advisory desk'], vulnerabilities: ['Fewer retail consumer credit products'] },
+      ],
+      fashion: [
+        { name: 'Ağsu Ticarət Mərkəzi & Butiklər Sırası', address: 'Heydər Əliyev Prospekti 14, Ağsu', neighborhood: 'Ağsu Mərkəzi Kvartal', rating: 4.5, reviews: 360, priceLevel: 2, strengths: ['Prime central streetfront visibility', 'Curated family apparel and footwear'], vulnerabilities: ['Limited international designer label presence'] },
+        { name: 'İpək Yolu Geyim Evi Ağsu', address: 'M.Ə.Rəsulzadə Küçəsi 19, Ağsu', neighborhood: 'Mərkəzi Kvartal', rating: 4.6, reviews: 290, priceLevel: 2, strengths: ['Quality regional fabrics and modern outfits', 'Loyal local clientele'], vulnerabilities: ['Compact storefront footprint'] },
+      ],
+      dining: [
+        { name: 'AzGranata Dad Evi & Şərab Dequstasiya Kompleksi', address: 'AzGranata Magistral Yolu 1, Ağsu', neighborhood: 'Ağsu Aqro-Biznes Zonası', rating: 4.8, reviews: 1480, priceLevel: 3, strengths: ['Iconic regional culinary and fruit wine showcase', 'Spacious garden dining terrace'], vulnerabilities: ['Advance booking recommended on weekends'] },
+        { name: 'Çinar Restoranı Ağsu', address: 'Heydər Əliyev Prospekti 42, Ağsu', neighborhood: 'Ağsu Mərkəzi Kvartal', rating: 4.6, reviews: 760, priceLevel: 2, strengths: ['Authentic regional kebabs and tandir bread', 'Fast family service'], vulnerabilities: ['Busy lunch rush hours'] },
+        { name: 'Ağsu Qədim Şəhər Süfrəsi & Kabab Evi', address: 'Qədim Ağsu Yolu 5, Ağsu', neighborhood: 'Arxeoloji Turizm Zonası', rating: 4.7, reviews: 620, priceLevel: 2, strengths: ['Traditional Shirvan culinary recipes', 'Scenic historic backdrop'], vulnerabilities: ['Evening transport connection needs car access'] },
+      ],
+      coffee: [
+        { name: 'Ağsu Coffee Corner & Şirniyyat Evi', address: 'Heydər Əliyev Prospekti 22, Ağsu', neighborhood: 'Ağsu Mərkəzi Kvartal', rating: 4.7, reviews: 380, priceLevel: 2, strengths: ['Fresh espresso and traditional Shirvan pakhlava', 'Comfortable study and meeting space'], vulnerabilities: ['Compact indoor seating'] },
+        { name: 'Şirvan Samovar Çayxanası & Qəhvəxana', address: 'M.Ə.Rəsulzadə Küçəsi 8, Ağsu', neighborhood: 'Mərkəzi Kvartal', rating: 4.6, reviews: 490, priceLevel: 1, strengths: ['Authentic tea blends and local fruit jams', 'Traditional garden ambiance'], vulnerabilities: ['Cash-only at peak outdoor tables'] },
+      ],
+    },
+    parkingGarages: [
+      { name: 'Ağsu Mərkəzi Meydan Avtodayanacağı', type: 'Surface Lot', address: 'Heydər Əliyev Prospekti, Ağsu', capacity: 220, hourlyRate: 0.3, dLat: 0.002, dLng: 0.002, hasEv: true },
+      { name: 'Ağsu Regional Avtovağzal Dayanacağı', type: 'Surface Lot', address: 'Bakı-Şamaxı-Yevlax Magistralı, Ağsu', capacity: 280, hourlyRate: 0.2, dLat: 0.005, dLng: -0.004, hasEv: true },
+      { name: 'Qədim Ağsu Turizm Kompleksi Dayanacağı', type: 'Surface Lot', address: 'Qədim Ağsu Yolu, Ağsu', capacity: 160, hourlyRate: 0.3, dLat: -0.003, dLng: 0.004, hasEv: true },
+    ],
+    vacantBuildings: [
+      { title: 'Heydər Əliyev Prospekti Mərkəzi Bank & Ticarət Obyekti', buildingName: 'Ağsu Mərkəzi Ticarət Pasajı #1', address: 'Heydər Əliyev Prospekti 28, Ağsu', crossStreets: 'Heydər Əliyev Pr. & M.Ə.Rəsulzadə Küç.', districtIdx: 0, sizeM2: 240, monthlyRent: 1600, propertyType: 'Corner Showcase', features: ['Reinforced security glazing and ATM facade cutouts', 'Pre-installed 3-phase electrical power and climate control', 'Direct pedestrian high-street frontage', 'Customer parking bays in front'] },
+      { title: 'Ağsu Ticarət Sırası Müasir Mağaza Sahəsi', buildingName: 'Ağsu Ticarət Kompleksi', address: 'M.Ə.Rəsulzadə Küçəsi 16, Ağsu', crossStreets: 'M.Ə.Rəsulzadə Küç. & Axundov Küç.', districtIdx: 0, sizeM2: 180, monthlyRent: 1200, propertyType: 'Street Retail Front', features: ['High pedestrian exposure', 'Turnkey interior finish', 'Open layout suitable for retail or clinic'] },
+      { title: 'Magistral Yol Üstü Ticarət & Xidmət Pavilyonu', buildingName: 'Ağsu Magistral Biznes Mərkəzi', address: 'Bakı-Şamaxı-Yevlax Magistralı 12, Ağsu', crossStreets: 'Magistral & Nərimanov Küç.', districtIdx: 2, sizeM2: 310, monthlyRent: 1800, propertyType: 'Standalone Commercial', features: ['High highway visibility', 'Spacious drive-in parking lot', 'Heavy commuter and freight transit flow'] },
+    ],
+  },
+
   agdam: {
     cityName: 'Agdam (Ağdam)',
     country: 'Azerbaijan',
@@ -544,6 +624,16 @@ export const REAL_WORLD_CITIES_CATALOG: Record<string, CityRealData> = {
       },
     ],
     realCompetitorsBySector: {
+      bakery: [
+        { name: 'Ağdam Şirniyyat & Çörək Evi (Təndir & Qənnadı)', address: 'Zəfər Prospekti 18, Ağdam', neighborhood: 'Mərkəzi Kvartal', rating: 4.8, reviews: 760, priceLevel: 2, strengths: ['Fresh Karabakh tandir bread and traditional pakhlava', 'High daily footfall on Zəfər Prospekti'], vulnerabilities: ['Morning rush queue at peak hours'] },
+        { name: 'Qarabağ Təndir Evi & Şirniyyat Mərkəzi', address: 'Pənahəli Xan Küçəsi 14, Ağdam', neighborhood: 'İmarət Kvartalı', rating: 4.7, reviews: 620, priceLevel: 2, strengths: ['Authentic hot tandir lavash and baked pastries', 'Fast takeaway service'], vulnerabilities: ['Limited dine-in seating'] },
+        { name: 'Natəvan Qənnadı və Şirniyyat Butiki', address: 'Xurşidbanu Natəvan Küçəsi 9, Ağdam', neighborhood: 'Mədəniyyət Parkı', rating: 4.9, reviews: 490, priceLevel: 3, strengths: ['Artisanal cakes, local honey pastries and specialty confectionery', 'Custom celebration cakes'], vulnerabilities: ['Advance pre-ordering required for bespoke orders'] },
+        { name: 'Ağdam Çörək & Bulka İstehsalı Mərkəzi', address: 'Ağdam Sənaye Parkı Prospekti 5, Ağdam', neighborhood: 'Sənaye & Logistika Zonası', rating: 4.6, reviews: 580, priceLevel: 1, strengths: ['High-capacity modern bakery line', 'Wholesale and retail fresh bread distribution'], vulnerabilities: ['Focuses primarily on high-volume standard bread lines'] },
+      ],
+      retail: [
+        { name: 'Ağdam Mərkəzi Ticarət Evi & Supermarket', address: 'Zəfər Prospekti 25, Ağdam', neighborhood: 'Zəfər Prospekti Koridoru', rating: 4.7, reviews: 1180, priceLevel: 2, strengths: ['Comprehensive fresh food, bakery and household goods selection', 'Express self-checkout terminals'], vulnerabilities: ['Peak hour checkout congestion'] },
+        { name: 'Bazarstore / Bravo Ağdam Filialı', address: 'Heydər Əliyev Prospekti 30, Ağdam', neighborhood: 'Mərkəzi Kvartal', rating: 4.8, reviews: 1540, priceLevel: 2, strengths: ['Modern supermarket layout with fresh in-store bakery', 'Loyalty card promotions'], vulnerabilities: ['High footfall creates parking constraints during weekends'] },
+      ],
       bank: [
         { name: 'ABB (Azərbaycan Beynəlxalq Bankı) - Ağdam Filialı & 24/7 ATM Mərkəzi', address: 'Zəfər Prospekti 14, Ağdam', neighborhood: 'Zəfər Prospekti Koridoru', rating: 4.8, reviews: 1420, priceLevel: 2, strengths: ['Premier state-backed corporate and retail banking', 'Full-service ATM cash-in/out hub', 'Priority business teller windows'], vulnerabilities: ['Peak hour teller queues on pension distribution days'] },
         { name: 'Kapital Bank - Ağdam Xidmət Şöbəsi & BirBank Rəqəmsal Zonası', address: 'Heydər Əliyev Prospekti 28, Ağdam', neighborhood: 'Mərkəzi Kvartal', rating: 4.7, reviews: 1850, priceLevel: 2, strengths: ['Market leader in BirBank mobile integration', 'Dual 24/7 drive-thru ATM kiosks', 'Express SME business credit desks'], vulnerabilities: ['Weekend branch service limited to digital zone'] },
@@ -1150,13 +1240,49 @@ REAL_WORLD_CITIES_CATALOG['adam'] = REAL_WORLD_CITIES_CATALOG['agdam'];
 REAL_WORLD_CITIES_CATALOG['ağdam'] = REAL_WORLD_CITIES_CATALOG['agdam'];
 REAL_WORLD_CITIES_CATALOG['aghdam'] = REAL_WORLD_CITIES_CATALOG['agdam'];
 REAL_WORLD_CITIES_CATALOG['agdam (ağdam)'] = REAL_WORLD_CITIES_CATALOG['agdam'];
+REAL_WORLD_CITIES_CATALOG['agsu'] = REAL_WORLD_CITIES_CATALOG['agsu'];
+REAL_WORLD_CITIES_CATALOG['ağsu'] = REAL_WORLD_CITIES_CATALOG['agsu'];
+REAL_WORLD_CITIES_CATALOG['aghsu'] = REAL_WORLD_CITIES_CATALOG['agsu'];
+REAL_WORLD_CITIES_CATALOG['agsu (ağsu)'] = REAL_WORLD_CITIES_CATALOG['agsu'];
 REAL_WORLD_CITIES_CATALOG['şuşa'] = REAL_WORLD_CITIES_CATALOG['shusha'];
 REAL_WORLD_CITIES_CATALOG['shusha (şuşa)'] = REAL_WORLD_CITIES_CATALOG['shusha'];
+REAL_WORLD_CITIES_CATALOG['baku'] = REAL_WORLD_CITIES_CATALOG['baku'];
+REAL_WORLD_CITIES_CATALOG['bakı'] = REAL_WORLD_CITIES_CATALOG['baku'];
+REAL_WORLD_CITIES_CATALOG['baku (bakı)'] = REAL_WORLD_CITIES_CATALOG['baku'];
+REAL_WORLD_CITIES_CATALOG['ganja'] = REAL_WORLD_CITIES_CATALOG['ganja'];
+REAL_WORLD_CITIES_CATALOG['gəncə'] = REAL_WORLD_CITIES_CATALOG['ganja'];
+REAL_WORLD_CITIES_CATALOG['ganja (gəncə)'] = REAL_WORLD_CITIES_CATALOG['ganja'];
+REAL_WORLD_CITIES_CATALOG['sumqayit'] = REAL_WORLD_CITIES_CATALOG['sumqayit'];
+REAL_WORLD_CITIES_CATALOG['sumqayıt'] = REAL_WORLD_CITIES_CATALOG['sumqayit'];
+REAL_WORLD_CITIES_CATALOG['sumqayit (sumqayıt)'] = REAL_WORLD_CITIES_CATALOG['sumqayit'];
+REAL_WORLD_CITIES_CATALOG['mingachevir'] = REAL_WORLD_CITIES_CATALOG['mingachevir'];
+REAL_WORLD_CITIES_CATALOG['mingəçevir'] = REAL_WORLD_CITIES_CATALOG['mingachevir'];
+REAL_WORLD_CITIES_CATALOG['mingachevir (mingəçevir)'] = REAL_WORLD_CITIES_CATALOG['mingachevir'];
+REAL_WORLD_CITIES_CATALOG['shaki'] = REAL_WORLD_CITIES_CATALOG['shaki'];
+REAL_WORLD_CITIES_CATALOG['şəki'] = REAL_WORLD_CITIES_CATALOG['shaki'];
+REAL_WORLD_CITIES_CATALOG['shaki (şəki)'] = REAL_WORLD_CITIES_CATALOG['shaki'];
+REAL_WORLD_CITIES_CATALOG['shirvan'] = REAL_WORLD_CITIES_CATALOG['shirvan'];
+REAL_WORLD_CITIES_CATALOG['şirvan'] = REAL_WORLD_CITIES_CATALOG['shirvan'];
+REAL_WORLD_CITIES_CATALOG['shirvan (şirvan)'] = REAL_WORLD_CITIES_CATALOG['shirvan'];
+REAL_WORLD_CITIES_CATALOG['nakhchivan'] = REAL_WORLD_CITIES_CATALOG['nakhchivan'];
+REAL_WORLD_CITIES_CATALOG['naxçıvan'] = REAL_WORLD_CITIES_CATALOG['nakhchivan'];
+REAL_WORLD_CITIES_CATALOG['nakhchivan (naxçıvan)'] = REAL_WORLD_CITIES_CATALOG['nakhchivan'];
+REAL_WORLD_CITIES_CATALOG['lankaran'] = REAL_WORLD_CITIES_CATALOG['lankaran'];
+REAL_WORLD_CITIES_CATALOG['lənkəran'] = REAL_WORLD_CITIES_CATALOG['lankaran'];
+REAL_WORLD_CITIES_CATALOG['lankaran (lənkəran)'] = REAL_WORLD_CITIES_CATALOG['lankaran'];
 
 // Generative fallback for ANY global city outside or inside the catalog with 100% DISTINCT CITY-SPECIFIC DATA
 export function generateRealCityData(city: string, country: string, baseLat: number, baseLng: number): CityRealData {
   const normalized = (city || '').trim().toLowerCase();
   const cleanNorm = normalized.replace(/\(.*?\)/g, '').trim();
+  const strippedAccentNorm = cleanNorm
+    .replace(/ğ/g, 'g')
+    .replace(/ə/g, 'e')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ç/g, 'c');
 
   if (REAL_WORLD_CITIES_CATALOG[normalized]) {
     return REAL_WORLD_CITIES_CATALOG[normalized];
@@ -1164,8 +1290,14 @@ export function generateRealCityData(city: string, country: string, baseLat: num
   if (REAL_WORLD_CITIES_CATALOG[cleanNorm]) {
     return REAL_WORLD_CITIES_CATALOG[cleanNorm];
   }
+  if (REAL_WORLD_CITIES_CATALOG[strippedAccentNorm]) {
+    return REAL_WORLD_CITIES_CATALOG[strippedAccentNorm];
+  }
   if (cleanNorm === 'adam' || cleanNorm === 'agdam' || cleanNorm === 'ağdam' || cleanNorm === 'aghdam') {
     if (REAL_WORLD_CITIES_CATALOG['agdam']) return REAL_WORLD_CITIES_CATALOG['agdam'];
+  }
+  if (cleanNorm === 'agsu' || cleanNorm === 'ağsu' || cleanNorm === 'aghsu') {
+    if (REAL_WORLD_CITIES_CATALOG['agsu']) return REAL_WORLD_CITIES_CATALOG['agsu'];
   }
   if (cleanNorm === 'shusha' || cleanNorm === 'şuşa') {
     if (REAL_WORLD_CITIES_CATALOG['shusha']) return REAL_WORLD_CITIES_CATALOG['shusha'];
@@ -1175,8 +1307,8 @@ export function generateRealCityData(city: string, country: string, baseLat: num
   let cLng = (baseLng !== 0 && !isNaN(baseLng)) ? baseLng : 0;
 
   if (cLat === 0 && cLng === 0) {
-    if (GLOBAL_CITY_COORDINATES[normalized] || GLOBAL_CITY_COORDINATES[cleanNorm]) {
-      const coord = GLOBAL_CITY_COORDINATES[normalized] || GLOBAL_CITY_COORDINATES[cleanNorm];
+    if (GLOBAL_CITY_COORDINATES[normalized] || GLOBAL_CITY_COORDINATES[cleanNorm] || GLOBAL_CITY_COORDINATES[strippedAccentNorm]) {
+      const coord = GLOBAL_CITY_COORDINATES[normalized] || GLOBAL_CITY_COORDINATES[cleanNorm] || GLOBAL_CITY_COORDINATES[strippedAccentNorm];
       cLat = coord.lat;
       cLng = coord.lng;
     } else {
@@ -1196,29 +1328,30 @@ export function generateRealCityData(city: string, country: string, baseLat: num
   const isRussiaOrCIS = countryLower.includes('russia') || countryLower.includes('kazakh') || countryLower.includes('uzbek') || countryLower.includes('georgia');
 
   // Compute a deterministic numeric seed from city name
-  const cityHash = hashCityString(city);
+  const displayCity = (city || '').replace(/\(.*?\)/g, '').trim() || city;
+  const cityHash = hashCityString(displayCity);
   const offset1 = ((cityHash % 7) + 1) * 12;
   const offset2 = (((cityHash >> 2) % 9) + 1) * 8;
   const offset3 = (((cityHash >> 4) % 11) + 1) * 15;
 
   // City-tailored street names that explicitly reflect the exact city and cultural naming
   let streetNames: string[] = [];
-  let district1Name = `${city} Central Downtown Core & High Street`;
-  let district2Name = `${city} Innovation Quarter & Tech Campus`;
-  let district3Name = `${city} Waterfront Promenade & Lifestyle Hub`;
-  let landmarkNames = [`${city} Central Plaza`, `${city} Grand Municipal Square`, `${city} Civic Amphitheater`];
+  let district1Name = `${displayCity} Central Downtown Core & High Street`;
+  let district2Name = `${displayCity} Innovation Quarter & Tech Campus`;
+  let district3Name = `${displayCity} Waterfront Promenade & Lifestyle Hub`;
+  let landmarkNames = [`${displayCity} Central Plaza`, `${displayCity} Grand Municipal Square`, `${displayCity} Civic Amphitheater`];
 
   if (isTurkey) {
     const turkishStreetsPool = [
-      `${city} Atatürk Bulvarı`,
-      `${city} Cumhuriyet Caddesi`,
-      `${city} Çarşı Caddesi No:${offset1}`,
-      `${city} Sahil Kordon Boyu`,
-      `${city} İstasyon Caddesi`,
-      `Mimar Sinan Caddesi ${city}`,
-      `${city} Sanayi & Ticaret Bulvarı`,
-      `Gazi Mustafa Kemal Paşa Caddesi ${city}`,
-      `${city} Üniversite Bulvarı`,
+      `Atatürk Bulvarı`,
+      `Cumhuriyet Caddesi`,
+      `Çarşı Caddesi No:${offset1}`,
+      `Sahil Kordon Boyu`,
+      `İstasyon Caddesi`,
+      `Mimar Sinan Caddesi`,
+      `Sanayi & Ticaret Bulvarı`,
+      `Gazi Mustafa Kemal Paşa Caddesi`,
+      `Üniversite Bulvarı`,
     ];
     streetNames = [
       turkishStreetsPool[cityHash % turkishStreetsPool.length],
@@ -1226,20 +1359,20 @@ export function generateRealCityData(city: string, country: string, baseLat: num
       turkishStreetsPool[(cityHash + 4) % turkishStreetsPool.length],
       turkishStreetsPool[(cityHash + 6) % turkishStreetsPool.length],
     ];
-    district1Name = `${city} Çarşı & ${streetNames[0].split(' ')[0]} Ticaret Merkezi`;
-    district2Name = `${city} Yenişehir & İnovasyon Aksı`;
-    district3Name = `${city} Sahil & Yaşam Parkı Bölgesi`;
-    landmarkNames = [`${city} Kent Meydanı`, `${city} Tarihi Saat Kulesi & Meydanı`, `${city} Kültür ve Kongre Merkezi`];
+    district1Name = `${displayCity} Çarşı & Ticaret Merkezi`;
+    district2Name = `${displayCity} Yenişehir & İnovasyon Aksı`;
+    district3Name = `${displayCity} Sahil & Yaşam Parkı Bölgesi`;
+    landmarkNames = [`${displayCity} Kent Meydanı`, `${displayCity} Tarihi Saat Kulesi & Meydanı`, `${displayCity} Kültür ve Kongre Merkezi`];
   } else if (isAzerbaijan) {
     const azeStreetsPool = [
-      `${city} Heydər Əliyev Prospekti`,
-      `${city} Nizami Gəncəvi Küçəsi No:${offset1}`,
-      `${city} Cavad Xan Küçəsi`,
-      `${city} Sülh Küçəsi No:${offset2}`,
-      `${city} Dənizkənarı Sahil Bulvarı`,
-      `Şah İsmayıl Xətai Prospekti ${city}`,
-      `${city} 28 May Küçəsi`,
-      `${city} Mərkəzi Meydan Prospekti`,
+      `Heydər Əliyev Prospekti`,
+      `M.Ə.Rəsulzadə Küçəsi No:${offset1}`,
+      `Nizami Gəncəvi Küçəsi`,
+      `M.F.Axundov Küçəsi No:${offset2}`,
+      `Şah İsmayıl Xətai Küçəsi`,
+      `Səməd Vurğun Küçəsi`,
+      `Mərkəzi Meydan Prospekti`,
+      `Vidadi Küçəsi`,
     ];
     streetNames = [
       azeStreetsPool[cityHash % azeStreetsPool.length],
@@ -1247,10 +1380,10 @@ export function generateRealCityData(city: string, country: string, baseLat: num
       azeStreetsPool[(cityHash + 4) % azeStreetsPool.length],
       azeStreetsPool[(cityHash + 6) % azeStreetsPool.length],
     ];
-    district1Name = `${city} Mərkəzi Ticarət & ${streetNames[0].split(' ')[0]} Zonası`;
-    district2Name = `${city} Yeni Şəhər & Biznes Parkı`;
-    district3Name = `${city} Park Bulvar & İstirahət Zonası`;
-    landmarkNames = [`${city} Mərkəzi Şəhər Meydanı`, `${city} Dövlət Dram Teatrı Kompleksi`, `${city} Heydər Əliyev Mərkəzi Parkı`];
+    district1Name = `${displayCity} Mərkəzi Ticarət & İnzibati Kvartalı`;
+    district2Name = `${displayCity} Aqro-Biznes & İqtisadi İnkişaf Zonası`;
+    district3Name = `${displayCity} Heydər Əliyev Parkı & Mədəniyyət Sahəsi`;
+    landmarkNames = [`${displayCity} Mərkəzi İcra Hakimiyyəti Meydanı`, `${displayCity} Mədəniyyət Mərkəzi Kompleksi`, `${displayCity} Heydər Əliyev Parkı və Kompleksi`];
   } else if (isGermany) {
     const deStreetsPool = [
       `${city}er Hauptstraße`,

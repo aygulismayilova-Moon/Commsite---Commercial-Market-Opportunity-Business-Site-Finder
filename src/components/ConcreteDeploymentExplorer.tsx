@@ -45,6 +45,14 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
   selectedSiteId,
   onSelectSite,
 }) => {
+  if (!analysis) {
+    return (
+      <div className="p-8 text-center text-slate-500 bg-white rounded-xl border border-slate-200">
+        No active commercial market analysis loaded.
+      </div>
+    );
+  }
+
   const sites = analysis.concreteDeploymentSites || [];
   const [activeSiteForSimulation, setActiveSiteForSimulation] = useState<ConcreteDeploymentSite | null>(
     sites.length > 0 ? sites[0] : null
@@ -56,7 +64,7 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
 
   // Deployment Simulation State
   const [customBrandName, setCustomBrandName] = useState<string>(
-    `Aura ${analysis.businessSector.split(' ')[0]} Hub`
+    `Aura ${(analysis.businessSector || 'Retail').split(' ')[0]} Hub`
   );
   const [simAvgOrderValue, setSimAvgOrderValue] = useState<number>(
     analysis.targetPriceTier === 'Ultra-Luxury / Exclusive'
@@ -385,7 +393,7 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
                     Location &amp; Footfall Highlights:
                   </span>
                   <div className="space-y-1">
-                    {(site.keyAdvantages || []).slice(0, 2).map((adv, i) => (
+                    {site.keyAdvantages.slice(0, 2).map((adv, i) => (
                       <div key={i} className="flex items-start gap-1.5 text-slate-600 text-[11px]">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                         <span className="leading-tight">{adv}</span>
@@ -785,7 +793,7 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
                     Site Verification &amp; Municipal Compliance Checklist:
                   </h5>
                   <div className="space-y-2">
-                    {(activeSiteForSimulation.deploymentChecklist || []).map((item, idx) => (
+                    {activeSiteForSimulation.deploymentChecklist.map((item, idx) => (
                       <div
                         key={idx}
                         className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200/80 flex items-center gap-3 text-xs text-slate-800"

@@ -326,13 +326,13 @@ export const CommercialSiteFinder: React.FC<CommercialSiteFinderProps> = ({ onEx
               <div className="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/60">
                 <div className="text-[11px] font-bold text-slate-400 uppercase">Total Addressable Mkt</div>
                 <div className="text-base font-extrabold text-white mt-1">
-                  ${(((analysis.marketOverview?.totalAddressableMarketAnnualUsd || 0)) / 1000000).toFixed(1)}M / yr
+                  ${(analysis.marketOverview.totalAddressableMarketAnnualUsd / 1000000).toFixed(1)}M / yr
                 </div>
               </div>
               <div className="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/60">
                 <div className="text-[11px] font-bold text-slate-400 uppercase">Identified Competitors</div>
                 <div className="text-base font-extrabold text-white mt-1">
-                  {analysis.marketOverview?.totalExistingCompetitors || 0} Units
+                  {analysis.marketOverview.totalExistingCompetitors} Units
                 </div>
               </div>
             </div>
@@ -354,7 +354,7 @@ export const CommercialSiteFinder: React.FC<CommercialSiteFinderProps> = ({ onEx
                           </h4>
                         </div>
                         <p className="text-xs text-slate-500 mt-0.5">
-                          District: {activeZone.district} &bull; Lat: {(activeZone.latitude ?? 0).toFixed(4)}, Lng: {(activeZone.longitude ?? 0).toFixed(4)}
+                          District: {activeZone.district} &bull; Lat: {activeZone.latitude.toFixed(4)}, Lng: {activeZone.longitude.toFixed(4)}
                         </p>
                       </div>
                       <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 font-extrabold text-xs rounded-lg">
@@ -530,7 +530,7 @@ export const CommercialSiteFinder: React.FC<CommercialSiteFinderProps> = ({ onEx
                       <div className="flex justify-between">
                         <span className="text-slate-500">Expected Annual Rev:</span>
                         <span className="font-bold text-slate-900">
-                          ${(((zone.predictedAnnualSalesVolumeUsd?.expected || 0)) / 1000000).toFixed(2)}M
+                          ${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M
                         </span>
                       </div>
                       <div className="flex justify-between">

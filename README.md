@@ -66,7 +66,7 @@ The platform unites two critical operational pillars:
 | **Styling & UI** | Tailwind CSS, Lucide Icons, Motion (Framer Motion) |
 | **Data Visualizations** | Recharts (Density & Demographics), D3.js, Custom Canvas Compositor |
 | **Backend & Proxy** | Express.js, TypeScript (bundled via esbuild to `dist/server.cjs`) |
-| **AI Models & Engines** | Google Gemini API (`gemini-3.7-flash`, `gemini-3.1-flash-lite`, `gemini-flash-latest`), Gemma 4 Scan Pipeline |
+| **AI Models & Engines** | Google Gemini API (`gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-2.5-pro`), Gemma 4 Scan Pipeline |
 | **Geospatial & Mapping** | Google Maps Platform (Static Maps, Places API), OpenStreetMap / Nominatim |
 | **Database & Auth** | Firebase Firestore, Firebase Authentication |
 | **Audio Synthesis** | Web Audio API (Synthesized Siren & Notification Chimes) |

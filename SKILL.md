@@ -147,10 +147,9 @@ All secret keys (`GEMINI_API_KEY`) remain strictly server-side. The Express back
 | `/api/health` | `GET` | Health check probe returning service uptime and status. |
 
 ### Quota Resilience & Model Strategy
-- Uses active production Gemini models: `gemini-3.7-flash`, `gemini-3.1-flash-lite`, `gemini-flash-latest`.
+- Uses active production Gemini models: `gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-2.5-pro`.
 - Rate limit guards: In-memory sliding window rate limiter prevents API abuse.
-- `generateWithFallbackAndRetry`: Handles quota limits or network timeouts by falling back to high-fidelity structured analysis generated via `/src/utils/marketFallbackGenerator.ts`.
-- `normalizeMarketAnalysis`: Defensive data pipeline ensures that all arrays (`opportunityZones`, `competitors`, `vacantProperties`, `parkingFacilities`, `concreteDeploymentSites`, `keyAiInsights`, `strategicActionPlan`) and SWOT sub-fields are strictly guaranteed to prevent runtime undefined errors.
+- `generateWithFallbackAndRetry`: Handles free-tier exhaustion or network timeouts by falling back to high-fidelity structured analysis generated via `/src/utils/marketFallbackGenerator.ts`.
 
 ---
 

@@ -51,7 +51,7 @@ interface CommercialMapProps {
 export const CommercialMap: React.FC<CommercialMapProps> = ({
   city,
   country,
-  centerCoords,
+  centerCoords = { lat: 40.4093, lng: 49.8671 },
   competitors = [],
   opportunityZones = [],
   vacantProperties = [],

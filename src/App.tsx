@@ -57,9 +57,7 @@ export const getUniquePlaces = (items: PlaceItem[]): PlaceItem[] => {
     const rawId = String(item.id || '').replace(/#/g, '').trim();
     const cleanName = String(item.place_name || '').trim();
     const cleanNameLower = cleanName.toLowerCase();
-    const lat = typeof item.latitude === 'number' && !isNaN(item.latitude) ? item.latitude : Number(item.latitude) || 0;
-    const lng = typeof item.longitude === 'number' && !isNaN(item.longitude) ? item.longitude : Number(item.longitude) || 0;
-    const coordKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+    const coordKey = `${item.latitude.toFixed(4)},${item.longitude.toFixed(4)}`;
 
     if (!cleanName) continue;
     if (rawId && seenIds.has(rawId.toLowerCase())) continue;
