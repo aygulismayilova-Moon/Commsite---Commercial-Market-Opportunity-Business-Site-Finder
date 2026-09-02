@@ -1,0 +1,8 @@
+{
+  "name": "Commsite - Commercial Market Opportunity | Business Site Finder",
+  "description": "Program evaluates commercial properties in cities, analyzes competitor density, identifies high-potential zones characterized by strong demographic indicators, available retail space,customer parking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

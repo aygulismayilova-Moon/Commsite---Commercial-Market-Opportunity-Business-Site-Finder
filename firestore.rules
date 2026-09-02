@@ -1,0 +1,134 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for validating document identifiers and payloads
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidPlace(data) {
+      return data.keys().hasAll(['id', 'place_name', 'latitude', 'longitude'])
+        && data.id is string && isValidId(data.id)
+        && data.place_name is string && data.place_name.size() > 0 && data.place_name.size() <= 200
+        && data.latitude is number && data.latitude >= -90.0 && data.latitude <= 90.0
+        && data.longitude is number && data.longitude >= -180.0 && data.longitude <= 180.0
+        && (!('area' in data) || (data.area is string && data.area.size() <= 200))
+        && (!('street' in data) || (data.street is string && data.street.size() <= 300))
+        && (!('city' in data) || (data.city is string && data.city.size() <= 200))
+        && (!('country' in data) || (data.country is string && data.country.size() <= 200))
+        && (!('description' in data) || (data.description is string && data.description.size() <= 2000))
+        && (!('category' in data) || (data.category is string && data.category.size() <= 100));
+    }
+
+    function isValidSnapshot(data) {
+      return data.keys().hasAll(['id', 'placeId', 'imageUrl', 'timestamp', 'dateLabel'])
+        && data.id is string && isValidId(data.id)
+        && data.placeId is string && isValidId(data.placeId)
+        && data.imageUrl is string && data.imageUrl.size() <= 2000000
+        && data.timestamp is number
+        && data.dateLabel is string && data.dateLabel.size() <= 100
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 2000))
+        && (!('zoomLevel' in data) || (data.zoomLevel is number && data.zoomLevel >= 0 && data.zoomLevel <= 22))
+        && (!('mapType' in data) || (data.mapType is string && data.mapType.size() <= 50));
+    }
+
+    function isValidAccident(data) {
+      return data.keys().hasAll(['id', 'placeId', 'accidentType', 'severity', 'timestamp'])
+        && data.id is string && isValidId(data.id)
+        && data.placeId is string && isValidId(data.placeId)
+        && data.accidentType is string && data.accidentType.size() <= 100
+        && data.severity is string && data.severity.size() <= 50
+        && data.timestamp is number
+        && (!('placeName' in data) || (data.placeName is string && data.placeName.size() <= 200))
+        && (!('cityName' in data) || (data.cityName is string && data.cityName.size() <= 200))
+        && (!('title' in data) || (data.title is string && data.title.size() <= 300))
+        && (!('description' in data) || (data.description is string && data.description.size() <= 2000));
+    }
+
+    function isValidAlarm(data) {
+      return data.keys().hasAll(['id', 'accidentType', 'severityThreshold'])
+        && data.id is string && isValidId(data.id)
+        && data.accidentType is string && data.accidentType.size() <= 100
+        && data.severityThreshold is string && data.severityThreshold.size() <= 50
+        && (!('isMuted' in data) || (data.isMuted is bool))
+        && (!('audioAlertEnabled' in data) || (data.audioAlertEnabled is bool))
+        && (!('createdDate' in data) || (data.createdDate is string && data.createdDate.size() <= 100))
+        && (!('label' in data) || (data.label is string && data.label.size() <= 200))
+        && (!('cityName' in data) || (data.cityName is string && data.cityName.size() <= 200));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'email', 'role'])
+        && data.id is string && isValidId(data.id)
+        && data.email is string && data.email.size() <= 200
+        && data.role is string && (data.role in ['admin', 'manager', 'analyst', 'viewer'])
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 200))
+        && (!('uid' in data) || (data.uid is string && data.uid.size() <= 200))
+        && (!('isAuthorizedAdmin' in data) || (data.isAuthorizedAdmin is bool))
+        && (!('department' in data) || (data.department is string && data.department.size() <= 200))
+        && (!('status' in data) || (data.status is string && (data.status in ['active', 'pending', 'suspended'])))
+        && (!('createdAt' in data) || (data.createdAt is number))
+        && (!('lastLoginAt' in data) || (data.lastLoginAt is number))
+        && (!('avatarUrl' in data) || (data.avatarUrl is string && data.avatarUrl.size() <= 2000));
+    }
+
+    function isValidAuditLog(data) {
+      return data.keys().hasAll(['id', 'action', 'actorEmail', 'timestamp'])
+        && data.id is string && isValidId(data.id)
+        && data.action is string && data.action.size() <= 200
+        && data.actorEmail is string && data.actorEmail.size() <= 200
+        && data.timestamp is number
+        && (!('actorUid' in data) || (data.actorUid is string && data.actorUid.size() <= 200))
+        && (!('details' in data) || (data.details is string && data.details.size() <= 3000))
+        && (!('category' in data) || (data.category is string && data.category.size() <= 100))
+        && (!('ipAddress' in data) || (data.ipAddress is string && data.ipAddress.size() <= 100));
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Collection rules with schema validation
+    match /places/{placeId} {
+      allow read: if true;
+      allow create, update: if isValidId(placeId) && isValidPlace(request.resource.data);
+      allow delete: if isValidId(placeId);
+    }
+
+    match /snapshots/{snapshotId} {
+      allow read: if true;
+      allow create, update: if isValidId(snapshotId) && isValidSnapshot(request.resource.data);
+      allow delete: if isValidId(snapshotId);
+    }
+
+    match /accidents/{accidentId} {
+      allow read: if true;
+      allow create, update: if isValidId(accidentId) && isValidAccident(request.resource.data);
+      allow delete: if isValidId(accidentId);
+    }
+
+    match /alarms/{alarmId} {
+      allow read: if true;
+      allow create, update: if isValidId(alarmId) && isValidAlarm(request.resource.data);
+      allow delete: if isValidId(alarmId);
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isValidId(userId) && isValidUser(request.resource.data);
+      allow delete: if isValidId(userId);
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if true;
+      allow create, update: if isValidId(logId) && isValidAuditLog(request.resource.data);
+      allow delete: if isValidId(logId);
+    }
+
+    match /test/{testId} {
+      allow read: if true;
+    }
+  }
+}
