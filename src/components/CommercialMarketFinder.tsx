@@ -112,6 +112,153 @@ const STORE_FORMATS: StoreFormatType[] = [
   'Anchor / Big-Box (> 1,200 m²)',
 ];
 
+function normalizeMarketAnalysis(data: any): CommercialMarketAnalysis {
+  if (!data) return data;
+  return {
+    ...data,
+    searchCity: data.searchCity || '',
+    searchCountry: data.searchCountry || '',
+    businessSector: data.businessSector || '',
+    targetPriceTier: data.targetPriceTier || 'Mid-Market & Standard ($$)',
+    storeFormat: data.storeFormat || 'Standard Retail (150 - 450 m²)',
+    cityCenterCoordinates: {
+      lat: typeof data.cityCenterCoordinates?.lat === 'number' ? data.cityCenterCoordinates.lat : (typeof data.cityCenterCoordinates?.latitude === 'number' ? data.cityCenterCoordinates.latitude : 0),
+      lng: typeof data.cityCenterCoordinates?.lng === 'number' ? data.cityCenterCoordinates.lng : (typeof data.cityCenterCoordinates?.longitude === 'number' ? data.cityCenterCoordinates.longitude : 0),
+    },
+    opportunityZones: Array.isArray(data.opportunityZones)
+      ? data.opportunityZones.map((z: any, zIdx: number) => ({
+          ...z,
+          id: z?.id || `zone-${zIdx + 1}`,
+          name: z?.name || `Opportunity Zone #${zIdx + 1}`,
+          district: z?.district || 'Central Commercial District',
+          latitude: typeof z?.latitude === 'number' ? z.latitude : 0,
+          longitude: typeof z?.longitude === 'number' ? z.longitude : 0,
+          opportunityScore: typeof z?.opportunityScore === 'number' ? z.opportunityScore : 80,
+          successProbabilityPct: typeof z?.successProbabilityPct === 'number' ? z.successProbabilityPct : 75,
+          demandSaturation: z?.demandSaturation || 'Balanced Market',
+          potentialCustomerBase: typeof z?.potentialCustomerBase === 'number' ? z.potentialCustomerBase : 45000,
+          targetDemographicFitScore: typeof z?.targetDemographicFitScore === 'number' ? z.targetDemographicFitScore : 80,
+          unmetDemandDrivers: Array.isArray(z?.unmetDemandDrivers) ? z.unmetDemandDrivers : [],
+          swotAnalysis: {
+            strengths: Array.isArray(z?.swotAnalysis?.strengths) ? z.swotAnalysis.strengths : [],
+            weaknesses: Array.isArray(z?.swotAnalysis?.weaknesses) ? z.swotAnalysis.weaknesses : [],
+            opportunities: Array.isArray(z?.swotAnalysis?.opportunities) ? z.swotAnalysis.opportunities : [],
+            threats: Array.isArray(z?.swotAnalysis?.threats) ? z.swotAnalysis.threats : [],
+          },
+          demographicSummary: {
+            primaryAgeGroup: z?.demographicSummary?.primaryAgeGroup || '25-50',
+            averageHouseholdIncomeUsd: typeof z?.demographicSummary?.averageHouseholdIncomeUsd === 'number' ? z.demographicSummary.averageHouseholdIncomeUsd : 55000,
+            footfallProfile: z?.demographicSummary?.footfallProfile || 'Steady',
+            consumerSpendingIndex: typeof z?.demographicSummary?.consumerSpendingIndex === 'number' ? z.demographicSummary.consumerSpendingIndex : 100,
+          },
+          predictedAnnualSalesVolumeUsd: {
+            low: typeof z?.predictedAnnualSalesVolumeUsd?.low === 'number' ? z.predictedAnnualSalesVolumeUsd.low : 1000000,
+            expected: typeof z?.predictedAnnualSalesVolumeUsd?.expected === 'number' ? z.predictedAnnualSalesVolumeUsd.expected : 1500000,
+            high: typeof z?.predictedAnnualSalesVolumeUsd?.high === 'number' ? z.predictedAnnualSalesVolumeUsd.high : 2000000,
+          },
+          recommendedStrategy: z?.recommendedStrategy || 'Establish initial retail or branch presence.',
+          matchedVacantPropertyIds: Array.isArray(z?.matchedVacantPropertyIds) ? z.matchedVacantPropertyIds : [],
+          nearbyParkingIds: Array.isArray(z?.nearbyParkingIds) ? z.nearbyParkingIds : [],
+        }))
+      : [],
+    competitors: Array.isArray(data.competitors)
+      ? data.competitors.map((c: any, idx: number) => ({
+          ...c,
+          id: c?.id || `comp-${idx + 1}`,
+          name: c?.name || `Competitor #${idx + 1}`,
+          latitude: typeof c?.latitude === 'number' ? c.latitude : 0,
+          longitude: typeof c?.longitude === 'number' ? c.longitude : 0,
+          rating: typeof c?.rating === 'number' ? c.rating : 4.2,
+          userRatingsTotal: typeof c?.userRatingsTotal === 'number' ? c.userRatingsTotal : 50,
+          estimatedDailyFootfall: typeof c?.estimatedDailyFootfall === 'number' ? c.estimatedDailyFootfall : 450,
+          estimatedFootprintM2: typeof c?.estimatedFootprintM2 === 'number' ? c.estimatedFootprintM2 : 200,
+          marketShareEstimatePct: typeof c?.marketShareEstimatePct === 'number' ? c.marketShareEstimatePct : 15,
+          vulnerabilities: Array.isArray(c?.vulnerabilities) ? c.vulnerabilities : [],
+          strengths: Array.isArray(c?.strengths) ? c.strengths : [],
+          address: c?.address || 'Commercial Corridor',
+          priceLevel: c?.priceLevel || '$$',
+        }))
+      : [],
+    vacantProperties: Array.isArray(data.vacantProperties)
+      ? data.vacantProperties.map((p: any, idx: number) => ({
+          ...p,
+          id: p?.id || `prop-${idx + 1}`,
+          title: p?.title || 'Commercial Space',
+          address: p?.address || 'Main Street',
+          neighborhood: p?.neighborhood || 'Commercial Center',
+          latitude: typeof p?.latitude === 'number' ? p.latitude : 0,
+          longitude: typeof p?.longitude === 'number' ? p.longitude : 0,
+          monthlyRentUsd: typeof p?.monthlyRentUsd === 'number' ? p.monthlyRentUsd : 3500,
+          rentPerM2Usd: typeof p?.rentPerM2Usd === 'number' ? p.rentPerM2Usd : 25,
+          sizeM2: typeof p?.sizeM2 === 'number' ? p.sizeM2 : 140,
+          sizeSqFt: typeof p?.sizeSqFt === 'number' ? p.sizeSqFt : 1500,
+          propertyType: p?.propertyType || 'Retail Storefront',
+          features: Array.isArray(p?.features) ? p.features : [],
+        }))
+      : [],
+    parkingFacilities: Array.isArray(data.parkingFacilities)
+      ? data.parkingFacilities.map((pk: any, idx: number) => ({
+          ...pk,
+          id: pk?.id || `parking-${idx + 1}`,
+          name: pk?.name || `Parking Facility #${idx + 1}`,
+          address: pk?.address || 'Parking Facility',
+          neighborhood: pk?.neighborhood || 'Central Commercial District',
+          latitude: typeof pk?.latitude === 'number' ? pk.latitude : 0,
+          longitude: typeof pk?.longitude === 'number' ? pk.longitude : 0,
+          capacitySpaces: typeof pk?.capacitySpaces === 'number' ? pk.capacitySpaces : 150,
+          hourlyRateUsd: typeof pk?.hourlyRateUsd === 'number' ? pk.hourlyRateUsd : 2.5,
+          dailyRateUsd: typeof pk?.dailyRateUsd === 'number' ? pk.dailyRateUsd : 15.0,
+          monthlyRateUsd: typeof pk?.monthlyRateUsd === 'number' ? pk.monthlyRateUsd : 120.0,
+          securityLevel: pk?.securityLevel || 'Monitored 24/7 CCTV',
+          hasEvCharging: typeof pk?.hasEvCharging === 'boolean' ? pk.hasEvCharging : true,
+          distanceToZoneMeters: typeof pk?.distanceToZoneMeters === 'number' ? pk.distanceToZoneMeters : 120,
+          convenienceScore: typeof pk?.convenienceScore === 'number' ? pk.convenienceScore : 88,
+        }))
+      : [],
+    concreteDeploymentSites: Array.isArray(data.concreteDeploymentSites)
+      ? data.concreteDeploymentSites.map((s: any, idx: number) => ({
+          ...s,
+          id: s?.id || `site-${idx + 1}`,
+          siteName: s?.siteName || `Commercial Site #${idx + 1}`,
+          spaceType: s?.spaceType || 'Corner Flagship Unit',
+          exactStreetAddress: s?.exactStreetAddress || 'Prime Commercial Avenue',
+          unitOrSuite: s?.unitOrSuite || 'Suite 101',
+          crossStreets: s?.crossStreets || 'Main Blvd & 1st Ave',
+          latitude: typeof s?.latitude === 'number' ? s.latitude : 0,
+          longitude: typeof s?.longitude === 'number' ? s.longitude : 0,
+          floorAreaM2: typeof s?.floorAreaM2 === 'number' ? s.floorAreaM2 : 180,
+          monthlyRentUsd: typeof s?.monthlyRentUsd === 'number' ? s.monthlyRentUsd : 4500,
+          estimatedFitoutCapExUsd: typeof s?.estimatedFitoutCapExUsd === 'number' ? s.estimatedFitoutCapExUsd : 45000,
+          deploymentSuitabilityScore: typeof s?.deploymentSuitabilityScore === 'number' ? s.deploymentSuitabilityScore : 92,
+          dailyPedestrianFootfall: typeof s?.dailyPedestrianFootfall === 'number' ? s.dailyPedestrianFootfall : 3500,
+          estimatedBreakevenMonths: typeof s?.estimatedBreakevenMonths === 'number' ? s.estimatedBreakevenMonths : 14,
+          turnkeyTimelineWeeks: typeof s?.turnkeyTimelineWeeks === 'number' ? s.turnkeyTimelineWeeks : 8,
+          recommendedFormat: s?.recommendedFormat || 'Full Service / High Volume',
+          deploymentChecklist: Array.isArray(s?.deploymentChecklist) ? s.deploymentChecklist : [],
+          keyAdvantages: Array.isArray(s?.keyAdvantages) ? s.keyAdvantages : [],
+          riskFactors: Array.isArray(s?.riskFactors) ? s.riskFactors : [],
+          contactBroker: s?.contactBroker || {
+            brokerName: 'Commercial Real Estate Brokerage',
+            agencyName: 'Metropolitan Commercial Advisory',
+            phone: '+1 (555) 019-2831',
+            email: 'leasing@commercialsites.com',
+          },
+        }))
+      : [],
+    keyAiInsights: Array.isArray(data.keyAiInsights) ? data.keyAiInsights : [],
+    strategicActionPlan: Array.isArray(data.strategicActionPlan) ? data.strategicActionPlan : [],
+    marketOverview: {
+      primeRecommendedZoneName: data?.marketOverview?.primeRecommendedZoneName || data?.opportunityZones?.[0]?.name || 'Prime Commercial Zone',
+      primeZoneOpportunityScore: typeof data?.marketOverview?.primeZoneOpportunityScore === 'number' ? data.marketOverview.primeZoneOpportunityScore : (data?.opportunityZones?.[0]?.opportunityScore || 90),
+      totalAddressableMarketAnnualUsd: typeof data?.marketOverview?.totalAddressableMarketAnnualUsd === 'number' ? data.marketOverview.totalAddressableMarketAnnualUsd : 15000000,
+      marketSaturationIndex: typeof data?.marketOverview?.marketSaturationIndex === 'number' ? data.marketOverview.marketSaturationIndex : 40,
+      unmetDemandIndex: typeof data?.marketOverview?.unmetDemandIndex === 'number' ? data.marketOverview.unmetDemandIndex : 60,
+      averageCompetitorRating: typeof data?.marketOverview?.averageCompetitorRating === 'number' ? data.marketOverview.averageCompetitorRating : 4.2,
+      totalExistingCompetitors: typeof data?.marketOverview?.totalExistingCompetitors === 'number' ? data.marketOverview.totalExistingCompetitors : (Array.isArray(data?.competitors) ? data.competitors.length : 0),
+    },
+  };
+}
+
 export const CommercialMarketFinder: React.FC = () => {
   // Search Form State - Defaulted to empty per user request
   const [selectedCity, setSelectedCity] = useState<string>('');
@@ -334,9 +481,10 @@ export const CommercialMarketFinder: React.FC = () => {
     const cacheKey = `${finalCity.toLowerCase()}_${finalCountry.toLowerCase()}_${finalSector.toLowerCase()}_${finalPriceTier.toLowerCase()}_${finalStoreFormat.toLowerCase()}`;
     const cachedData = marketAnalysisCacheRef.current.get(cacheKey);
     if (cachedData) {
-      setAnalysis(cachedData);
-      if (cachedData.opportunityZones && cachedData.opportunityZones.length > 0) {
-        setSelectedZoneId(cachedData.opportunityZones[0].id);
+      const normalized = normalizeMarketAnalysis(cachedData);
+      setAnalysis(normalized);
+      if (normalized.opportunityZones && normalized.opportunityZones.length > 0) {
+        setSelectedZoneId(normalized.opportunityZones[0].id);
       }
       return;
     }
@@ -382,7 +530,8 @@ export const CommercialMarketFinder: React.FC = () => {
         throw new Error(`Server returned status ${response.status}`);
       }
 
-      const data: CommercialMarketAnalysis = await response.json();
+      const rawData = await response.json();
+      const data: CommercialMarketAnalysis = normalizeMarketAnalysis(rawData);
       marketAnalysisCacheRef.current.set(cacheKey, data);
       setAnalysis(data);
       if (data.opportunityZones && data.opportunityZones.length > 0) {
@@ -392,7 +541,7 @@ export const CommercialMarketFinder: React.FC = () => {
       if (error?.name === 'AbortError') {
         return;
       }
-      const fallbackData = generateClientMarketFallback(
+      const rawFallback = generateClientMarketFallback(
         finalCity,
         finalCountry,
         finalSector,
@@ -401,6 +550,7 @@ export const CommercialMarketFinder: React.FC = () => {
         finalLat,
         finalLng
       );
+      const fallbackData = normalizeMarketAnalysis(rawFallback);
       marketAnalysisCacheRef.current.set(cacheKey, fallbackData);
       setAnalysis(fallbackData);
       if (fallbackData.opportunityZones && fallbackData.opportunityZones.length > 0) {
@@ -415,7 +565,7 @@ export const CommercialMarketFinder: React.FC = () => {
   };
 
   const activeZone = useMemo(() => {
-    if (!analysis || !analysis.opportunityZones) return null;
+    if (!analysis || !analysis.opportunityZones || analysis.opportunityZones.length === 0) return null;
     return analysis.opportunityZones.find((z) => z.id === selectedZoneId) || analysis.opportunityZones[0];
   }, [analysis, selectedZoneId]);
 
@@ -434,16 +584,16 @@ export const CommercialMarketFinder: React.FC = () => {
       'Recommended Strategy',
     ];
 
-    const rows = analysis.opportunityZones.map((z) => [
-      `"${z.name.replace(/"/g, '""')}"`,
-      `"${z.district.replace(/"/g, '""')}"`,
+    const rows = (analysis.opportunityZones || []).map((z) => [
+      `"${(z.name || '').replace(/"/g, '""')}"`,
+      `"${(z.district || '').replace(/"/g, '""')}"`,
       z.opportunityScore,
       `${z.successProbabilityPct}%`,
       `"${z.demandSaturation}"`,
       z.potentialCustomerBase,
-      z.predictedAnnualSalesVolumeUsd.expected,
+      z.predictedAnnualSalesVolumeUsd?.expected || 0,
       `${z.targetDemographicFitScore}%`,
-      `"${z.recommendedStrategy.replace(/"/g, '""')}"`,
+      `"${(z.recommendedStrategy || '').replace(/"/g, '""')}"`,
     ]);
 
     const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
@@ -463,14 +613,14 @@ export const CommercialMarketFinder: React.FC = () => {
   // Comparative Chart Data preparation
   const salesComparisonData = useMemo(() => {
     if (!analysis?.opportunityZones) return [];
-    return analysis.opportunityZones.map((z) => ({
-      name: z.name.length > 18 ? `${z.name.substring(0, 16)}...` : z.name,
-      fullName: z.name,
-      'Expected Sales ($k)': Math.round(z.predictedAnnualSalesVolumeUsd.expected / 1000),
-      'Min Projected ($k)': Math.round(z.predictedAnnualSalesVolumeUsd.low / 1000),
-      'Max Potential ($k)': Math.round(z.predictedAnnualSalesVolumeUsd.high / 1000),
-      'Opportunity Score': z.opportunityScore,
-      'Success Prob (%)': z.successProbabilityPct,
+    return (analysis.opportunityZones || []).map((z) => ({
+      name: (z.name || '').length > 18 ? `${(z.name || '').substring(0, 16)}...` : (z.name || ''),
+      fullName: z.name || '',
+      'Expected Sales ($k)': Math.round((z.predictedAnnualSalesVolumeUsd?.expected || 0) / 1000),
+      'Min Projected ($k)': Math.round((z.predictedAnnualSalesVolumeUsd?.low || 0) / 1000),
+      'Max Potential ($k)': Math.round((z.predictedAnnualSalesVolumeUsd?.high || 0) / 1000),
+      'Opportunity Score': z.opportunityScore || 0,
+      'Success Prob (%)': z.successProbabilityPct || 0,
     }));
   }, [analysis]);
 
@@ -731,7 +881,7 @@ export const CommercialMarketFinder: React.FC = () => {
               <DollarSign className="w-4 h-4 text-blue-600" />
             </div>
             <h3 className="text-xl font-black text-slate-900">
-              ${(analysis.marketOverview.totalAddressableMarketAnnualUsd / 1000000).toFixed(1)}M USD
+              ${(((analysis.marketOverview?.totalAddressableMarketAnnualUsd || 0)) / 1000000).toFixed(1)}M USD
             </h3>
             <p className="text-[11px] text-slate-500 mt-1 font-medium">
               Target sector metropolitan expenditure
@@ -894,7 +1044,7 @@ export const CommercialMarketFinder: React.FC = () => {
               }`}
             >
               <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Opportunity Zones ({analysis.opportunityZones.length})</span>
+              <span>Opportunity Zones ({analysis.opportunityZones?.length || 0})</span>
             </button>
 
             <button
@@ -906,7 +1056,7 @@ export const CommercialMarketFinder: React.FC = () => {
               }`}
             >
               <Building className="w-3.5 h-3.5 text-blue-600" />
-              <span>Vacant for Rent ({analysis.vacantProperties.length})</span>
+              <span>Vacant for Rent ({analysis.vacantProperties?.length || 0})</span>
             </button>
 
             <button
@@ -918,7 +1068,7 @@ export const CommercialMarketFinder: React.FC = () => {
               }`}
             >
               <Car className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Parking &amp; Transit ({analysis.parkingFacilities.length})</span>
+              <span>Parking &amp; Transit ({analysis.parkingFacilities?.length || 0})</span>
             </button>
 
             <button
@@ -978,7 +1128,7 @@ export const CommercialMarketFinder: React.FC = () => {
                     <span>Key Strategic Findings &amp; Market Dynamics</span>
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {analysis.keyAiInsights.map((insight, idx) => (
+                    {(analysis.keyAiInsights || []).map((insight, idx) => (
                       <div
                         key={idx}
                         className="p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1 transition-colors"
@@ -1002,7 +1152,7 @@ export const CommercialMarketFinder: React.FC = () => {
                     <span>Recommended Expansion &amp; Launch Roadmap</span>
                   </h4>
                   <div className="space-y-2">
-                    {analysis.strategicActionPlan.map((action, idx) => (
+                    {(analysis.strategicActionPlan || []).map((action, idx) => (
                       <div
                         key={idx}
                         className="p-3 bg-white rounded-lg border border-slate-200 shadow-sm text-xs flex items-start gap-3"
@@ -1048,12 +1198,12 @@ export const CommercialMarketFinder: React.FC = () => {
                     </p>
                   </div>
                   <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    {analysis.opportunityZones.length} Zones Analyzed
+                    {analysis.opportunityZones?.length || 0} Zones Analyzed
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {analysis.opportunityZones.map((zone) => {
+                  {(analysis.opportunityZones || []).map((zone) => {
                     const isSelected = activeZone?.id === zone.id;
 
                     return (
@@ -1108,7 +1258,7 @@ export const CommercialMarketFinder: React.FC = () => {
                           <div>
                             <span className="text-[10px] text-slate-400 block font-semibold">Spending Index</span>
                             <span className="font-extrabold text-blue-700">
-                              {zone.demographicSummary?.consumerSpendingIndex} (Base 100)
+                              {zone.demographicSummary?.consumerSpendingIndex || 100} (Base 100)
                             </span>
                           </div>
                         </div>
@@ -1118,12 +1268,12 @@ export const CommercialMarketFinder: React.FC = () => {
                           <div className="flex justify-between text-xs">
                             <span className="font-bold text-slate-700">Predicted Annual Sales Volume:</span>
                             <span className="font-black text-emerald-700">
-                              ${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M expected
+                              ${(((zone.predictedAnnualSalesVolumeUsd?.expected || 0)) / 1000000).toFixed(2)}M expected
                             </span>
                           </div>
                           <div className="flex justify-between text-[10px] text-slate-400 font-semibold">
-                            <span>Low: ${(zone.predictedAnnualSalesVolumeUsd.low / 1000000).toFixed(2)}M</span>
-                            <span>High: ${(zone.predictedAnnualSalesVolumeUsd.high / 1000000).toFixed(2)}M</span>
+                            <span>Low: ${(((zone.predictedAnnualSalesVolumeUsd?.low || 0)) / 1000000).toFixed(2)}M</span>
+                            <span>High: ${(((zone.predictedAnnualSalesVolumeUsd?.high || 0)) / 1000000).toFixed(2)}M</span>
                           </div>
                         </div>
 
@@ -1133,7 +1283,7 @@ export const CommercialMarketFinder: React.FC = () => {
                             Why Unmet Demand Exists:
                           </span>
                           <ul className="list-disc list-inside text-xs text-slate-600 space-y-0.5">
-                            {zone.unmetDemandDrivers.map((driver, idx) => (
+                            {(zone.unmetDemandDrivers || []).map((driver, idx) => (
                               <li key={idx} className="leading-snug">
                                 {driver}
                               </li>
@@ -1217,12 +1367,12 @@ export const CommercialMarketFinder: React.FC = () => {
                     </p>
                   </div>
                   <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
-                    {analysis.vacantProperties.length} Properties Listed
+                    {analysis.vacantProperties?.length || 0} Properties Listed
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {analysis.vacantProperties.map((prop) => (
+                  {(analysis.vacantProperties || []).map((prop) => (
                     <div
                       key={prop.id}
                       className={`p-5 rounded-xl border flex flex-col justify-between space-y-3 bg-white shadow-sm hover:shadow-md transition-all ${
@@ -1239,7 +1389,7 @@ export const CommercialMarketFinder: React.FC = () => {
                           </span>
                           <div className="text-right">
                             <span className="text-base font-black text-blue-700">
-                              ${prop.monthlyRentUsd.toLocaleString()}
+                              ${prop.monthlyRentUsd?.toLocaleString()}
                             </span>
                             <span className="text-[10px] text-slate-400 block font-medium">/ month</span>
                           </div>
@@ -1267,7 +1417,7 @@ export const CommercialMarketFinder: React.FC = () => {
 
                         {/* Features */}
                         <div className="mt-3 flex flex-wrap gap-1">
-                          {prop.features.map((feat, idx) => (
+                          {(prop.features || []).map((feat, idx) => (
                             <span
                               key={idx}
                               className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-medium"
@@ -1333,12 +1483,12 @@ export const CommercialMarketFinder: React.FC = () => {
                     </p>
                   </div>
                   <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
-                    {analysis.parkingFacilities.length} Facilities Mapped
+                    {analysis.parkingFacilities?.length || 0} Facilities Mapped
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {analysis.parkingFacilities.map((park) => (
+                  {(analysis.parkingFacilities || []).map((park) => (
                     <div
                       key={park.id}
                       className="p-5 rounded-xl border border-slate-200 bg-white shadow-sm space-y-3"
@@ -1369,7 +1519,7 @@ export const CommercialMarketFinder: React.FC = () => {
                         </div>
                         <div>
                           <span className="text-[10px] text-slate-400 block font-semibold">Hourly Rate</span>
-                          <span className="font-extrabold text-slate-900">${park.hourlyRateUsd.toFixed(2)}/hr</span>
+                          <span className="font-extrabold text-slate-900">${(park.hourlyRateUsd ?? 0).toFixed(2)}/hr</span>
                         </div>
                         <div>
                           <span className="text-[10px] text-slate-400 block font-semibold">EV Charging</span>

@@ -147,64 +147,157 @@ export function getSectorCompetitorTemplates(
   }
 
   // 8. Electronics, Gadgets, Computers & Audio
-  if (s.includes('electronic') || s.includes('gadget') || s.includes('audio') || s.includes('camera') || s.includes('phone') || s.includes('computer')) {
+  if (s.includes('electronic') || s.includes('gadget') || s.includes('audio') || s.includes('camera') || s.includes('phone') || s.includes('computer') || s.includes('appliance')) {
     return [
       { name: `${city} Tech Flagship Experience Store`, address: `${st0} No:1, ${city}`, neighborhood: 'Prime Retail Mall', rating: 4.7, reviews: 6400, priceLevel: 3, strengths: ['Iconic architectural flagship presence', 'High average transaction spend'], vulnerabilities: ['Service appointment congestion', 'Fixed non-negotiable retail margins'] },
       { name: `${city} Megastore & Digital Appliances`, address: `${st1} No:150, ${city}`, neighborhood: 'Commercial Plaza', rating: 4.2, reviews: 3200, priceLevel: 2, strengths: ['Broad multi-brand appliance inventory', 'Price matching guarantees'], vulnerabilities: ['Variable in-store staff technical expertise', 'Generic warehouse environment'] },
       { name: `Acoustic Sound & Hi-Fi Studio ${city}`, address: `${st2} No:32, ${city}`, neighborhood: 'Luxury Quarter', rating: 4.8, reviews: 420, priceLevel: 4, strengths: ['Audiophile acoustic demo rooms', 'Custom architectural installation services'], vulnerabilities: ['Ultra-luxury price tags narrow prospective buyers', 'Low walk-in conversion'] },
+      { name: `MobileTech Repair & Gadget Hub ${city}`, address: `${st3} No:78, ${city}`, neighborhood: 'Transit Hub', rating: 4.5, reviews: 1890, priceLevel: 2, strengths: ['Rapid 30-minute repair turnarounds', 'High-margin accessory add-ons'], vulnerabilities: ['Limited retail showroom space', 'Intense local independent competition'] },
     ];
   }
 
   // 9. Fashion, Apparel, Boutiques & Shoes
-  if (s.includes('fashion') || s.includes('cloth') || s.includes('apparel') || s.includes('boutique') || s.includes('shoe') || s.includes('luxury') || s.includes('jewel')) {
+  if (s.includes('fashion') || s.includes('cloth') || s.includes('apparel') || s.includes('boutique') || s.includes('shoe') || s.includes('luxury') || s.includes('jewel') || s.includes('watch') || s.includes('dress') || s.includes('tailor')) {
     return [
       { name: `${city} Premier Designer Galleria`, address: `${st0} No:45, ${city}`, neighborhood: 'Fashion Avenue', rating: 4.7, reviews: 2900, priceLevel: 3, strengths: ['High pedestrian luxury traffic', 'Curated international and local designer collections'], vulnerabilities: ['High lease overhead', 'Peak hour fitting room queues'] },
       { name: `Atelier & Haute Couture ${city}`, address: `${st1} No:24, ${city}`, neighborhood: 'Heritage Row', rating: 4.6, reviews: 1450, priceLevel: 4, strengths: ['Bespoke tailoring services', 'Loyal affluent clientele'], vulnerabilities: ['Long production lead times for custom orders'] },
       { name: `${city} Urban Streetwear & Footwear`, address: `${st2} No:88, ${city}`, neighborhood: 'Creative Quarter', rating: 4.5, reviews: 1820, priceLevel: 2, strengths: ['Exclusive sneaker drops', 'High youth and tourist draw'], vulnerabilities: ['Rapid trend turnover requires constant inventory refreshment'] },
+      { name: `Luxe Timepieces & Fine Jewelry ${city}`, address: `${st3} No:12, ${city}`, neighborhood: 'Gold & Diamond Corridor', rating: 4.8, reviews: 920, priceLevel: 4, strengths: ['Certified pre-owned luxury horology', 'High-security private appraisal salon'], vulnerabilities: ['High insurance and security overhead'] },
     ];
   }
 
-  // 10. Default / Dynamic Generator tailored uniquely to this city
+  // 10. Automotive, EV Charging, Detailing, Car Wash & Repair
+  if (s.includes('auto') || s.includes('car') || s.includes('ev') || s.includes('vehicle') || s.includes('tire') || s.includes('motor') || s.includes('mechanic') || s.includes('detailing') || s.includes('valet')) {
+    return [
+      { name: `${city} Premier EV Fast-Charging Lounge & Hub`, address: `${st0} No:112, ${city}`, neighborhood: 'Commercial Transit Ring', rating: 4.8, reviews: 1420, priceLevel: 3, strengths: ['350kW ultra-fast CCS chargers', 'Air-conditioned driver workspace with specialty coffee'], vulnerabilities: ['High grid interconnect upgrade capital costs', 'Queue formation during holiday travel peaks'] },
+      { name: `Apex Precision Auto Detailing & Ceramic Studio ${city}`, address: `${st1} No:84, ${city}`, neighborhood: 'Automotive Plaza', rating: 4.9, reviews: 980, priceLevel: 4, strengths: ['Dust-free climate-controlled bay', 'Certified paint protection film (PPF) installer'], vulnerabilities: ['Multi-day service turnaround limits bay throughput'] },
+      { name: `${city} Central German Motors & Hybrid Specialists`, address: `${st2} No:55, ${city}`, neighborhood: 'Industrial Boulevard', rating: 4.6, reviews: 2150, priceLevel: 3, strengths: ['OEM computer diagnostics', 'Extensive European parts inventory in stock'], vulnerabilities: ['Long appointment booking lead times (7-10 days)'] },
+      { name: `Express Laser Car Wash & Valet ${city}`, address: `${st3} No:201, ${city}`, neighborhood: 'Commerce Expressway', rating: 4.4, reviews: 3100, priceLevel: 2, strengths: ['3-minute frictionless touchless wash tunnel', 'Subscription recurring monthly pass program'], vulnerabilities: ['High water recycling maintenance costs', 'Weather-dependent revenue fluctuations'] },
+    ];
+  }
+
+  // 11. Beauty, Aesthetics, Spas, Hair & Barbershops
+  if (s.includes('beauty') || s.includes('salon') || s.includes('spa') || s.includes('barber') || s.includes('hair') || s.includes('nail') || s.includes('cosmetic') || s.includes('aesthetic') || s.includes('skincare') || s.includes('massage')) {
+    return [
+      { name: `${city} Lumière Aesthetic Clinic & MedSpa`, address: `${st0} No:38, ${city}`, neighborhood: 'Prestige Promenade', rating: 4.9, reviews: 1680, priceLevel: 4, strengths: ['Board-certified aesthetic physicians', 'FDA-cleared laser skin rejuvenation equipment'], vulnerabilities: ['High therapist acquisition and retention costs'] },
+      { name: `The Gentlemen’s Heritage Barber & Grooming Club ${city}`, address: `${st1} No:19, ${city}`, neighborhood: 'Historic Quarter', rating: 4.8, reviews: 2450, priceLevel: 3, strengths: ['Complimentary single malt whiskey with hot towel shave', 'Loyal recurring monthly membership club'], vulnerabilities: ['Walk-in clients turned away due to full booking calendar'] },
+      { name: `${city} Organic Nail Studio & Botanical Spa`, address: `${st2} No:62, ${city}`, neighborhood: 'Lifestyle Arcade', rating: 4.7, reviews: 1920, priceLevel: 2, strengths: ['Non-toxic vegan gel polishes', 'Simultaneous manicure/pedicure express stations'], vulnerabilities: ['Peak weekend congestion requiring deposit booking'] },
+      { name: `Elysium Thermal Bath & Swedish Massage ${city}`, address: `${st3} No:95, ${city}`, neighborhood: 'Wellness District', rating: 4.6, reviews: 1150, priceLevel: 4, strengths: ['Private hydrotherapy soaking suites', 'Couple treatment packages'], vulnerabilities: ['High utility operating costs for steam and saunas'] },
+    ];
+  }
+
+  // 12. Furniture, Home Decor, Lighting & Interior Design
+  if (s.includes('furniture') || s.includes('decor') || s.includes('interior') || s.includes('lighting') || s.includes('kitchen') || s.includes('rug') || s.includes('mattress') || s.includes('home') || s.includes('architect')) {
+    return [
+      { name: `${city} Scandinavian Design & Furniture Gallery`, address: `${st0} No:150, ${city}`, neighborhood: 'Design District', rating: 4.8, reviews: 1840, priceLevel: 4, strengths: ['Authentic solid oak & teak minimalist collections', 'In-house 3D interior architecture studio'], vulnerabilities: ['8-12 week custom upholstery production lead time'] },
+      { name: `${city} Heritage Home Furnishings & Living Concepts`, address: `${st1} No:210, ${city}`, neighborhood: 'Commercial Boulevard', rating: 4.5, reviews: 3400, priceLevel: 2, strengths: ['Immediate local warehouse stock delivery', 'Interest-free installment financing'], vulnerabilities: ['Large footprint creates high square-meter overhead'] },
+      { name: `Lumina Architectural Lighting & Smart Home ${city}`, address: `${st2} No:40, ${city}`, neighborhood: 'Creative Tech Quarter', rating: 4.7, reviews: 860, priceLevel: 3, strengths: ['DALI & Zigbee smart lighting interactive darkroom', 'Commercial contractor bulk pricing tier'], vulnerabilities: ['Niche technical focus requires specialized sales consultants'] },
+    ];
+  }
+
+  // 13. Education, Tutoring, Language & Art Academies
+  if (s.includes('education') || s.includes('tutor') || s.includes('school') || s.includes('academy') || s.includes('language') || s.includes('music') || s.includes('art') || s.includes('dance') || s.includes('stem') || s.includes('coding') || s.includes('child')) {
+    return [
+      { name: `${city} Cambridge Scholars Academic & STEM Center`, address: `${st0} No:72, ${city}`, neighborhood: 'University & Civic Core', rating: 4.9, reviews: 1120, priceLevel: 3, strengths: ['98% top-tier university placement rate', 'State-of-the-art robotics and chemistry labs'], vulnerabilities: ['Strict entrance diagnostic assessment', 'Premium term tuition fees'] },
+      { name: `${city} Global Languages & Cultural Institute`, address: `${st1} No:33, ${city}`, neighborhood: 'Academic District', rating: 4.7, reviews: 1540, priceLevel: 2, strengths: ['Native-speaking instructors for 12 languages', 'Flexible hybrid evening & weekend schedules'], vulnerabilities: ['Seasonal enrollment drop during summer holiday months'] },
+      { name: `Virtuoso Music & Performing Arts Conservatory ${city}`, address: `${st2} No:18, ${city}`, neighborhood: 'Cultural Arts Row', rating: 4.8, reviews: 930, priceLevel: 3, strengths: ['Soundproof Steinway piano studios', 'Annual philharmonic youth showcase'], vulnerabilities: ['Limited soundproof room capacity during after-school peak (4-7 PM)'] },
+    ];
+  }
+
+  // 14. Pet Hospital, Veterinary, Grooming & Pet Supplies
+  if (s.includes('pet') || s.includes('vet') || s.includes('dog') || s.includes('cat') || s.includes('animal') || s.includes('aquarium')) {
+    return [
+      { name: `${city} 24/7 Animal Emergency Hospital & Trauma Center`, address: `${st0} No:88, ${city}`, neighborhood: 'Medical & Civic Boulevard', rating: 4.8, reviews: 3100, priceLevel: 3, strengths: ['24/7 on-call veterinary surgeons and digital CT scanner', 'Separate stress-free cat and dog waiting lobbies'], vulnerabilities: ['High emergency intake triage wait times during night shifts'] },
+      { name: `Paws & Paws Luxury Pet Spa & Canine Boutique ${city}`, address: `${st1} No:27, ${city}`, neighborhood: 'Residential Green Corridor', rating: 4.7, reviews: 1650, priceLevel: 3, strengths: ['Organic hydro-massage baths and styling', 'Gourmet raw dog bakery & wellness treats'], vulnerabilities: ['Saturday appointments booked 3 weeks in advance'] },
+      { name: `${city} Veterinary Care & Wellness Clinic`, address: `${st2} No:49, ${city}`, neighborhood: 'Central Neighborhood', rating: 4.6, reviews: 1980, priceLevel: 2, strengths: ['Preventive vaccine plans', 'Affordable annual dental cleaning packages'], vulnerabilities: ['Smaller facility lacks overnight critical care boarding'] },
+    ];
+  }
+
+  // 15. Entertainment, Cinema, Gaming, VR & Sports
+  if (s.includes('cinema') || s.includes('movie') || s.includes('game') || s.includes('gaming') || s.includes('vr') || s.includes('arcade') || s.includes('bowling') || s.includes('escape') || s.includes('entertainment') || s.includes('play')) {
+    return [
+      { name: `${city} IMAX Cineplex & VIP Lounge`, address: `${st0} No:1, ${city}`, neighborhood: 'City Center Mall', rating: 4.7, reviews: 7800, priceLevel: 3, strengths: ['Laser IMAX projection and motorized leather recliners', 'Full hot menu and craft beer service delivered to seat'], vulnerabilities: ['High ticket pricing reduces frequency for large families'] },
+      { name: `HyperSpace VR & Esports Arena ${city}`, address: `${st1} No:56, ${city}`, neighborhood: 'Innovation & Youth District', rating: 4.8, reviews: 1420, priceLevel: 3, strengths: ['Omni-directional VR treadmills and 10Gbps LAN gaming rigs', 'Popular birthday and corporate team-building venue'], vulnerabilities: ['Hardware depreciation requires bi-annual GPU upgrades'] },
+      { name: `Kingpin Boutique Bowling & Retro Arcade ${city}`, address: `${st2} No:102, ${city}`, neighborhood: 'Entertainment Strip', rating: 4.6, reviews: 3900, priceLevel: 3, strengths: ['Bespoke retro pinball machines and illuminated cocktail lanes', 'Late-night DJ residency on weekends'], vulnerabilities: ['High acoustic noise levels deter quiet corporate gatherings'] },
+    ];
+  }
+
+  // 16. Hotels, Hospitality & Extended Stay Suites
+  if (s.includes('hotel') || s.includes('hospitality') || s.includes('hostel') || s.includes('lodge') || s.includes('resort') || s.includes('suite') || s.includes('inn') || s.includes('stay')) {
+    return [
+      { name: `The Grand Regency Hotel & Suites ${city}`, address: `${st0} No:10, ${city}`, neighborhood: 'Central Historic Square', rating: 4.8, reviews: 4500, priceLevel: 4, strengths: ['5-star luxury heritage building with rooftop infinity pool', 'Michelin-guide recognized ballroom dining'], vulnerabilities: ['High fixed room service staffing costs'] },
+      { name: `${city} Urban Boutique Hotel & Art Lounge`, address: `${st1} No:42, ${city}`, neighborhood: 'Creative Arts Quarter', rating: 4.7, reviews: 2800, priceLevel: 3, strengths: ['Curated contemporary local art in each room', 'High international business traveler loyalty'], vulnerabilities: ['Limited on-site subterranean parking (15 valet spots)'] },
+      { name: `CityStay Executive Suites & Co-Living ${city}`, address: `${st2} No:77, ${city}`, neighborhood: 'Financial Business Core', rating: 4.5, reviews: 1890, priceLevel: 3, strengths: ['Fully equipped designer kitchens with high-speed fiber', 'Flexible weekly and monthly corporate booking tiers'], vulnerabilities: ['Minimal front-desk concierge services'] },
+    ];
+  }
+
+  // 17. Logistics, Dark Stores, Courier & 3D Prototyping
+  if (s.includes('logistic') || s.includes('courier') || s.includes('delivery') || s.includes('dark store') || s.includes('warehouse') || s.includes('print') || s.includes('cargo') || s.includes('freight')) {
+    return [
+      { name: `${city} Express Micro-Fulfillment & Dark Store Hub`, address: `${st0} No:200, ${city}`, neighborhood: 'Metropolitan Logistics Ring', rating: 4.7, reviews: 850, priceLevel: 2, strengths: ['15-minute ultra-fast neighborhood delivery radius', 'Automated robotic pick-and-pack sorting conveyor'], vulnerabilities: ['Restricted customer walk-in access limits street brand exposure'] },
+      { name: `${city} Industrial 3D Additive Manufacturing & Prototyping Lab`, address: `${st1} No:64, ${city}`, neighborhood: 'Industrial Tech Park', rating: 4.8, reviews: 520, priceLevel: 3, strengths: ['Direct metal laser sintering (DMLS) and carbon-fiber printers', 'Aerospace and medical device ISO-certified cleanroom'], vulnerabilities: ['High raw material powder inventory carrying costs'] },
+      { name: `Global Cargo & Courier Dispatch Center ${city}`, address: `${st2} No:118, ${city}`, neighborhood: 'Transit Gateway', rating: 4.4, reviews: 1950, priceLevel: 2, strengths: ['Same-day international customs clearance brokerage', '24/7 automated package drop & locker bank'], vulnerabilities: ['Heavy truck traffic requires strict municipal zoning permits'] },
+    ];
+  }
+
+  // 18. Breweries, Distilleries, Wineries, Bars & Nightclubs
+  if (s.includes('brew') || s.includes('bar') || s.includes('pub') || s.includes('wine') || s.includes('cocktail') || s.includes('nightclub') || s.includes('lounge') || s.includes('distill') || s.includes('alcohol')) {
+    return [
+      { name: `${city} Craft Brewery & Industrial Taproom`, address: `${st0} No:22, ${city}`, neighborhood: 'Warehouse Arts District', rating: 4.8, reviews: 3600, priceLevel: 2, strengths: ['24 rotating fresh craft taps brewed on-site', 'Outdoor heated beer garden and live music stage'], vulnerabilities: ['Seasonal revenue drop during cold winter weekdays'] },
+      { name: `The Alchemist Speakeasy & Cocktail Parlor ${city}`, address: `${st1} No:7, ${city}`, neighborhood: 'Historic Downtown Core', rating: 4.9, reviews: 2200, priceLevel: 4, strengths: ['Award-winning mixologists with bespoke molecular cocktails', 'High-spend VIP bottle and lounge reservations'], vulnerabilities: ['Strict dress code and 60-person intimate capacity'] },
+      { name: `${city} Sommelier Wine Cellar & Tapas Bar`, address: `${st2} No:48, ${city}`, neighborhood: 'Old Town Promenade', rating: 4.7, reviews: 1780, priceLevel: 3, strengths: ['Over 400 biodynamic and vintage wines by the glass', 'Charcuterie pairings sourced directly from European farms'], vulnerabilities: ['High sommelier training and temperature-controlled storage overhead'] },
+    ];
+  }
+
+  // 19. Smart Generic Dynamic Generator tailored 100% to the specific sector name and city
+  const cleanSector = sector || 'Commercial Business';
+  const cleanSectorWords = cleanSector
+    .replace(/[&/\\#,+()$~%.'":*?<>{}]/g, '')
+    .split(' ')
+    .filter((w) => w.length > 2);
+  const primarySectorKeyword = cleanSectorWords[0] || 'Commercial';
+  const secondarySectorKeyword = cleanSectorWords[1] || 'Enterprise';
+
   return [
     {
-      name: `${city} Commercial Vanguard Center`,
+      name: `${city} Prime ${primarySectorKeyword} ${secondarySectorKeyword} Flagship`,
       address: `${st0} No:108, ${city}`,
       neighborhood: `${lm0} District`,
-      rating: 4.7,
+      rating: 4.8,
       reviews: 1420,
       priceLevel: 3,
-      strengths: ['Prominent corner street frontage', 'Established commercial trade accounts'],
-      vulnerabilities: ['Legacy digital tools', 'Higher operating overhead costs'],
+      strengths: [`Direct streetfront visibility along ${st0}`, `Established brand reputation in ${cleanSector}`, 'Loyal recurring customer accounts'],
+      vulnerabilities: ['Higher square meter leasing overhead', 'Peak hour customer service bottlenecks'],
     },
     {
-      name: `${city} Apex & Meridian Flagship`,
+      name: `Vanguard & Artisan ${primarySectorKeyword} Studio ${city}`,
       address: `${st1} No:44, ${city}`,
       neighborhood: `${lm1} Quarter`,
-      rating: 4.6,
+      rating: 4.7,
       reviews: 980,
       priceLevel: 3,
-      strengths: ['Strong demographic alignment with local residents', 'Dedicated client concierge'],
-      vulnerabilities: ['Limited parking spaces during rush hour', 'Conservative expansion pace'],
+      strengths: ['Specialized bespoke offerings with high average spend', `Proximity to ${lm1} draws affluent footfall`],
+      vulnerabilities: ['Limited parking spaces during rush hours', 'Niche marketing focus'],
     },
     {
-      name: `${city} Lumina Enterprise Solutions`,
+      name: `${city} ${primarySectorKeyword} Hub & Solutions`,
       address: `${st2} No:19, ${city}`,
       neighborhood: 'Downtown Central',
       rating: 4.5,
       reviews: 730,
       priceLevel: 2,
-      strengths: ['Competitive pricing tier', 'Rapid fulfillment turnaround'],
-      vulnerabilities: ['Smaller floorplate restricts large display formats', 'Lower brand awareness'],
+      strengths: ['Competitive value pricing tier', 'Rapid same-day service and turnaround'],
+      vulnerabilities: ['Smaller floorplate limits large interactive displays', 'Lower baseline digital ad spend'],
     },
     {
-      name: `${city} Pinnacle Commercial Hub`,
+      name: `Apex ${secondarySectorKeyword || primarySectorKeyword} Center ${city}`,
       address: `${st3} No:72, ${city}`,
       neighborhood: 'Commercial Corridor',
-      rating: 4.4,
+      rating: 4.6,
       reviews: 580,
-      priceLevel: 2,
-      strengths: ['Modern online-to-offline ordering platform', 'Strong local supplier network'],
-      vulnerabilities: ['Under-invested physical store fitout', 'Customer service response latency'],
+      priceLevel: 3,
+      strengths: ['Modern physical interior fitout', 'Strong regional supplier partnerships'],
+      vulnerabilities: ['Under-developed mobile app loyalty ecosystem', 'Customer inquiry response latency'],
     },
   ];
 }

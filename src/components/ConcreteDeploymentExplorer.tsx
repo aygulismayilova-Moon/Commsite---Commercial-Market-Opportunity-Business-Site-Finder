@@ -385,7 +385,7 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
                     Location &amp; Footfall Highlights:
                   </span>
                   <div className="space-y-1">
-                    {site.keyAdvantages.slice(0, 2).map((adv, i) => (
+                    {(site.keyAdvantages || []).slice(0, 2).map((adv, i) => (
                       <div key={i} className="flex items-start gap-1.5 text-slate-600 text-[11px]">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                         <span className="leading-tight">{adv}</span>
@@ -785,7 +785,7 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
                     Site Verification &amp; Municipal Compliance Checklist:
                   </h5>
                   <div className="space-y-2">
-                    {activeSiteForSimulation.deploymentChecklist.map((item, idx) => (
+                    {(activeSiteForSimulation.deploymentChecklist || []).map((item, idx) => (
                       <div
                         key={idx}
                         className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200/80 flex items-center gap-3 text-xs text-slate-800"

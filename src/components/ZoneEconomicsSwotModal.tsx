@@ -47,18 +47,18 @@ export const ZoneEconomicsSwotModal: React.FC<ZoneEconomicsSwotModalProps> = ({
   if (!isOpen || !zone) return null;
 
   // Filter matched vacant properties for this zone
-  const matchedProperties = analysis.vacantProperties.filter(
+  const matchedProperties = (analysis?.vacantProperties || []).filter(
     (p) =>
       zone.matchedVacantPropertyIds?.includes(p.id) ||
-      p.neighborhood.toLowerCase().includes(zone.district.toLowerCase()) ||
-      p.address.toLowerCase().includes(zone.name.toLowerCase())
+      p.neighborhood?.toLowerCase().includes(zone.district?.toLowerCase() || '') ||
+      p.address?.toLowerCase().includes(zone.name?.toLowerCase() || '')
   );
 
   // Filter nearby parking
-  const matchedParking = analysis.parkingFacilities.filter(
+  const matchedParking = (analysis?.parkingFacilities || []).filter(
     (pk) =>
       zone.nearbyParkingIds?.includes(pk.id) ||
-      pk.neighborhood.toLowerCase().includes(zone.district.toLowerCase())
+      pk.neighborhood?.toLowerCase().includes(zone.district?.toLowerCase() || '')
   );
 
   const copySummaryToClipboard = () => {
@@ -69,7 +69,7 @@ City: ${analysis.searchCity}, ${analysis.searchCountry}
 Opportunity Score: ${zone.opportunityScore}/100 | Win Probability: ${zone.successProbabilityPct}%
 Demand Saturation: ${zone.demandSaturation}
 Potential Customers: ${zone.potentialCustomerBase.toLocaleString()} | Avg Household Income: $${zone.demographicSummary.averageHouseholdIncomeUsd.toLocaleString()}
-Projected Annual Sales: $${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M (Range: $${(zone.predictedAnnualSalesVolumeUsd.low / 1000000).toFixed(2)}M - $${(zone.predictedAnnualSalesVolumeUsd.high / 1000000).toFixed(2)}M)
+Projected Annual Sales: $${(((zone.predictedAnnualSalesVolumeUsd?.expected || 0)) / 1000000).toFixed(2)}M (Range: $${(((zone.predictedAnnualSalesVolumeUsd?.low || 0)) / 1000000).toFixed(2)}M - $${(((zone.predictedAnnualSalesVolumeUsd?.high || 0)) / 1000000).toFixed(2)}M)
 
 [SWOT MATRIX]
 STRENGTHS:
@@ -154,7 +154,7 @@ ${zone.recommendedStrategy}
             <div>
               <span className="text-[10px] text-slate-300 block font-medium">Est. Annual Revenue</span>
               <div className="text-xl font-black text-amber-300">
-                ${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M
+                ${(((zone.predictedAnnualSalesVolumeUsd?.expected || 0)) / 1000000).toFixed(2)}M
               </div>
             </div>
             <div>
@@ -328,7 +328,7 @@ ${zone.recommendedStrategy}
                   <span>Why Unmet Demand Exists in this Zone</span>
                 </div>
                 <ul className="list-disc list-inside space-y-1 text-xs text-slate-700">
-                  {zone.unmetDemandDrivers.map((driver, idx) => (
+                  {(zone.unmetDemandDrivers || []).map((driver, idx) => (
                     <li key={idx} className="leading-relaxed">
                       {driver}
                     </li>
@@ -360,19 +360,19 @@ ${zone.recommendedStrategy}
                   <div className="p-3 bg-white rounded-lg border border-emerald-100 shadow-sm">
                     <span className="text-[10px] font-semibold text-slate-400 block">Conservative (Low)</span>
                     <span className="text-base font-black text-slate-700">
-                      ${(zone.predictedAnnualSalesVolumeUsd.low / 1000000).toFixed(2)}M
+                      ${(((zone.predictedAnnualSalesVolumeUsd?.low || 0)) / 1000000).toFixed(2)}M
                     </span>
                   </div>
                   <div className="p-3 bg-white rounded-lg border-2 border-emerald-500 shadow-md">
                     <span className="text-[10px] font-black text-emerald-600 block">Expected Baseline</span>
                     <span className="text-lg font-black text-emerald-700">
-                      ${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M
+                      ${(((zone.predictedAnnualSalesVolumeUsd?.expected || 0)) / 1000000).toFixed(2)}M
                     </span>
                   </div>
                   <div className="p-3 bg-white rounded-lg border border-emerald-100 shadow-sm">
                     <span className="text-[10px] font-semibold text-slate-400 block">Aggressive (High)</span>
                     <span className="text-base font-black text-slate-700">
-                      ${(zone.predictedAnnualSalesVolumeUsd.high / 1000000).toFixed(2)}M
+                      ${(((zone.predictedAnnualSalesVolumeUsd?.high || 0)) / 1000000).toFixed(2)}M
                     </span>
                   </div>
                 </div>

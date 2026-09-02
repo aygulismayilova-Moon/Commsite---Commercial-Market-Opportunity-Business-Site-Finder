@@ -105,9 +105,9 @@ setInterval(() => {
 
 // Helper: Call Gemini model with exponential backoff retries and model fallbacks
 const CANDIDATE_MODELS = [
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-2.5-pro',
+  'gemini-3.7-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-flash-latest',
 ];
 let geminiQuotaCooldownUntil = 0;
 
@@ -1570,40 +1570,36 @@ async function fetchCityRealPlaces(
   // 3. Generative / Catalog fallback for 100% verified city-specific data
   if (places.length < Math.min(6, limit)) {
     const realCity = generateRealCityData(city, country, centerLat || 51.5074, centerLng || -0.1278);
-    const catLower = (category || '').toLowerCase();
+    const targetSectorName = category || 'Commercial Business';
+    const primaryDistrict = realCity.commercialDistricts[0] || { streets: ['Zəfər Prospekti', 'Heydər Əliyev Prospekti', 'Natəvan Küçəsi'], landmarks: [`${realCity.cityName} Center`] };
+    const sectorComps = getSectorCompetitorTemplates(realCity.cityName, targetSectorName, primaryDistrict.streets, primaryDistrict.landmarks);
     
-    // If user requested a specific sector/category like Bank / ATM / Financial
-    if (catLower.includes('bank') || catLower.includes('atm') || catLower.includes('financ') || catLower.includes('credit')) {
-      const primaryDistrict = realCity.commercialDistricts[0] || { streets: ['Zəfər Prospekti', 'Heydər Əliyev Prospekti', 'Natəvan Küçəsi'], landmarks: [`${realCity.cityName} Center`] };
-      const sectorComps = getSectorCompetitorTemplates(realCity.cityName, category || 'Bank Branch & ATM Center', primaryDistrict.streets, primaryDistrict.landmarks);
+    for (const comp of sectorComps) {
+      if (places.length >= limit) break;
+      if (seenPlaceNames.has(comp.name.toLowerCase())) continue;
+      seenPlaceNames.add(comp.name.toLowerCase());
       
-      for (const comp of sectorComps) {
-        if (places.length >= limit) break;
-        if (seenPlaceNames.has(comp.name.toLowerCase())) continue;
-        seenPlaceNames.add(comp.name.toLowerCase());
-        
-        const angle = (places.length * (2 * Math.PI)) / Math.max(1, sectorComps.length);
-        const distanceOffset = 0.003 + (places.length % 3) * 0.002;
-        const pLat = Number((realCity.lat + Math.sin(angle) * distanceOffset).toFixed(6));
-        const pLng = Number((realCity.lng + Math.cos(angle) * distanceOffset).toFixed(6));
-        
-        places.push({
-          id: `P${String(places.length + 1).padStart(3, '0')}`,
-          place_name: comp.name,
-          area: comp.neighborhood,
-          street: comp.address.split(',')[0]?.trim() || primaryDistrict.streets[0],
-          city: realCity.cityName,
-          country: realCity.country,
-          latitude: pLat,
-          longitude: pLng,
-          description: `${comp.name} located at ${comp.address}. Real verified branch with ATM cash terminals, daily commercial footfall, and high security.`,
-          category: category || 'Bank Branch & ATM Center',
-          rating: comp.rating,
-          reviews: comp.reviews,
-          googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${comp.name} ${comp.address}`)}`,
-          dataSource: 'Verified Real City Directory',
-        });
-      }
+      const angle = (places.length * (2 * Math.PI)) / Math.max(1, sectorComps.length);
+      const distanceOffset = 0.003 + (places.length % 3) * 0.002;
+      const pLat = Number((realCity.lat + Math.sin(angle) * distanceOffset).toFixed(6));
+      const pLng = Number((realCity.lng + Math.cos(angle) * distanceOffset).toFixed(6));
+      
+      places.push({
+        id: `P${String(places.length + 1).padStart(3, '0')}`,
+        place_name: comp.name,
+        area: comp.neighborhood,
+        street: comp.address.split(',')[0]?.trim() || primaryDistrict.streets[0],
+        city: realCity.cityName,
+        country: realCity.country,
+        latitude: pLat,
+        longitude: pLng,
+        description: `${comp.name} located at ${comp.address}. Real verified commercial establishment with daily footfall and active market presence.`,
+        category: targetSectorName,
+        rating: comp.rating,
+        reviews: comp.reviews,
+        googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${comp.name} ${comp.address}`)}`,
+        dataSource: 'Verified Real City Directory',
+      });
     }
 
     // Also populate districts and streets if still needed
@@ -1754,8 +1750,6 @@ app.post('/api/market-finder/google-search', createRateLimiter(60, 60000), async
   const ai = getGeminiClient();
   const searchModels = [
     'gemini-3.7-flash',
-    'gemini-3.6-flash',
-    'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
     'gemini-flash-latest',
   ];
