@@ -5,7 +5,7 @@
 ---
 
 ## 📌 Live Application
-- **URL**: [https://geoguard-map-monitor-change-detector-4470.ai.studio](https://geoguard-map-monitor-change-detector-4470.ai.studio)
+- **URL**: [https://commsite-commercial-market-opportunity-business-s-1.ai.studio](https://commsite-commercial-market-opportunity-business-s-1.ai.studio)
 
 ---
 
