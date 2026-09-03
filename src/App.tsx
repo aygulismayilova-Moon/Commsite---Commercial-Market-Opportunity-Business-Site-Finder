@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { PlaceItem, MapSnapshot, AccidentEvent, IncidentAlarm } from './types';
-import { INITIAL_PLACES, SAMPLE_CSV_TEXT } from './data/samplePlaces';
+import { PlaceItem, MapSnapshot, AccidentEvent, IncidentAlarm, DemoBusiness } from './types';
+import { INITIAL_PLACES, SAMPLE_CSV_TEXT, INITIAL_DEMO_BUSINESSES } from './data/samplePlaces';
 import { DEFAULT_ALARMS, DEFAULT_ACCIDENT_EVENTS } from './data/sampleAccidentsAndAlarms';
 import {
   getAllSnapshots,
@@ -45,6 +45,7 @@ const PLACES_STORAGE_KEY = 'geoguard_places_dataset_v1';
 const ALARMS_STORAGE_KEY = 'geoguard_alarms_dataset_v1';
 const ACCIDENTS_STORAGE_KEY = 'geoguard_accidents_dataset_v1';
 const RECENT_PLACES_KEY = 'geoguard_recent_places_v1';
+const DEMO_BUSINESSES_STORAGE_KEY = 'geoguard_demo_businesses_v1';
 
 // Helper function to enforce unique places and clean IDs without '#' signs
 export const getUniquePlaces = (items: PlaceItem[]): PlaceItem[] => {
@@ -57,7 +58,9 @@ export const getUniquePlaces = (items: PlaceItem[]): PlaceItem[] => {
     const rawId = String(item.id || '').replace(/#/g, '').trim();
     const cleanName = String(item.place_name || '').trim();
     const cleanNameLower = cleanName.toLowerCase();
-    const coordKey = `${item.latitude.toFixed(4)},${item.longitude.toFixed(4)}`;
+    const latNum = typeof item.latitude === 'number' ? item.latitude : Number(item.latitude) || 0;
+    const lngNum = typeof item.longitude === 'number' ? item.longitude : Number(item.longitude) || 0;
+    const coordKey = `${latNum.toFixed(4)},${lngNum.toFixed(4)}`;
 
     if (!cleanName) continue;
     if (rawId && seenIds.has(rawId.toLowerCase())) continue;
@@ -145,6 +148,74 @@ export default function App() {
     }
     return DEFAULT_ALARMS;
   });
+
+  // Demo Businesses state for Commercial Market Intelligence
+  const [demoBusinesses, setDemoBusinesses] = useState<DemoBusiness[]>(() => {
+    try {
+      const saved = localStorage.getItem(DEMO_BUSINESSES_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Failed to load demo businesses from storage', e);
+    }
+    return INITIAL_DEMO_BUSINESSES;
+  });
+
+  const handleSaveDemoBusiness = (business: DemoBusiness) => {
+    setDemoBusinesses((prev) => {
+      const exists = prev.some((b) => b.id === business.id);
+      const updated = exists
+        ? prev.map((b) => (b.id === business.id ? business : b))
+        : [business, ...prev];
+      try {
+        localStorage.setItem(DEMO_BUSINESSES_STORAGE_KEY, JSON.stringify(updated));
+      } catch (e) {
+        console.error('Failed to persist demo businesses', e);
+      }
+      return updated;
+    });
+  };
+
+  const handleDeleteDemoBusiness = (businessId: string) => {
+    setDemoBusinesses((prev) => {
+      const updated = prev.filter((b) => b.id !== businessId);
+      try {
+        localStorage.setItem(DEMO_BUSINESSES_STORAGE_KEY, JSON.stringify(updated));
+      } catch (e) {
+        console.error('Failed to delete demo business', e);
+      }
+      return updated;
+    });
+  };
+
+  const handleDuplicateDemoBusiness = (business: DemoBusiness) => {
+    const cloned: DemoBusiness = {
+      ...business,
+      id: `demo-biz-${Date.now()}`,
+      businessName: `${business.businessName} (Copy)`,
+      createdAt: new Date().toISOString(),
+    };
+    handleSaveDemoBusiness(cloned);
+  };
+
+  const handleAddToMonitoredPlaces = (business: DemoBusiness) => {
+    const newPlace: PlaceItem = {
+      id: `DEMO-${Date.now().toString(36).slice(-4).toUpperCase()}`,
+      place_name: business.businessName,
+      area: business.neighborhood || business.city,
+      street: business.address,
+      city: business.city,
+      country: business.country,
+      latitude: business.latitude,
+      longitude: business.longitude,
+      description: `Demo Business: ${business.businessType} - Status: ${business.status}. Projected Annual Sales: $${(business.projectedAnnualSalesUsd || 0).toLocaleString()}`,
+      category: 'Commercial Deployment',
+    };
+    handleAddSinglePlace(newPlace);
+    setActiveView('monitoring');
+  };
 
   // API Key Status
   const [hasGoogleMapsKey, setHasGoogleMapsKey] = useState<boolean>(false);
@@ -619,7 +690,14 @@ export default function App() {
           />
         ) : activeView === 'commercial' ? (
           /* Dedicated Commercial Market Opportunity & Site Selection Page */
-          <CommercialMarketFinder />
+          <CommercialMarketFinder
+            demoBusinesses={demoBusinesses}
+            onSaveDemoBusiness={handleSaveDemoBusiness}
+            onDeleteDemoBusiness={handleDeleteDemoBusiness}
+            onDuplicateDemoBusiness={handleDuplicateDemoBusiness}
+            onAddToMonitoredPlaces={handleAddToMonitoredPlaces}
+            onNavigateToMonitoring={() => setActiveView('monitoring')}
+          />
         ) : (
           /* Area Surveillance, Snapshots & Places Monitoring View */
           <>

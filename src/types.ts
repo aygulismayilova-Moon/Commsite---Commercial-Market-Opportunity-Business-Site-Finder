@@ -137,6 +137,9 @@ export interface CommercialBusinessType {
   place: string;
   approximately_area: string;
   popularity: 'Low' | 'Medium' | 'High' | 'Very High' | string;
+  customer_type?: 'companies' | 'all' | 'children' | 'woman' | 'families' | 'man' | 'youth' | 'seniors' | 'students' | string;
+  isCustom?: boolean;
+  isModified?: boolean;
 }
 
 export type BusinessSectorCategory =
@@ -371,5 +374,40 @@ export interface SystemSecurityConfig {
   allowCsvExport: boolean;
   allowBulkDelete: boolean;
   aiRateLimitThreshold: number;
+}
+
+export type DemoBusinessStatus =
+  | 'Concept / Planning'
+  | 'Site Selected'
+  | 'Feasibility Confirmed'
+  | 'Ready to Deploy';
+
+export interface DemoBusiness {
+  id: string;
+  businessName: string;
+  businessType: string;
+  sector: string;
+  city: string;
+  country: string;
+  address: string;
+  neighborhood?: string;
+  latitude: number;
+  longitude: number;
+  storeFormat?: string;
+  targetPriceTier?: string;
+  projectedAnnualSalesUsd?: number;
+  estimatedCapExUsd?: number;
+  estimatedMonthlyRentUsd?: number;
+  expectedGrossMarginPct?: number;
+  targetDemographicFitScore?: number;
+  opportunityScore?: number;
+  status: DemoBusinessStatus;
+  notes?: string;
+  createdAt: string;
+  sourceZoneId?: string;
+  sourceZoneName?: string;
+  sourceSiteId?: string;
+  sourceSiteName?: string;
+  googleMapsUrl?: string;
 }
 

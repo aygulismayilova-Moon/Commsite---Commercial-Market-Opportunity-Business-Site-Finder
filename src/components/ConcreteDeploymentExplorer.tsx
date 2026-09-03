@@ -30,6 +30,7 @@ import {
   FileText,
   Calendar,
   Percent,
+  Briefcase,
 } from 'lucide-react';
 
 interface ConcreteDeploymentExplorerProps {
@@ -37,6 +38,7 @@ interface ConcreteDeploymentExplorerProps {
   onFocusSiteOnMap?: (site: ConcreteDeploymentSite) => void;
   selectedSiteId?: string;
   onSelectSite?: (siteId: string) => void;
+  onCreateDemoBusiness?: (site: ConcreteDeploymentSite) => void;
 }
 
 export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProps> = ({
@@ -44,6 +46,7 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
   onFocusSiteOnMap,
   selectedSiteId,
   onSelectSite,
+  onCreateDemoBusiness,
 }) => {
   if (!analysis) {
     return (
@@ -418,16 +421,28 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
 
               {/* Bottom Action Footer */}
               <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-2">
-                <button
-                  onClick={() => {
-                    if (onSelectSite) onSelectSite(site.id);
-                    if (onFocusSiteOnMap) onFocusSiteOnMap(site);
-                  }}
-                  className="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Highlight on Map</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      if (onSelectSite) onSelectSite(site.id);
+                      if (onFocusSiteOnMap) onFocusSiteOnMap(site);
+                    }}
+                    className="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Highlight on Map</span>
+                  </button>
+
+                  {onCreateDemoBusiness && (
+                    <button
+                      onClick={() => onCreateDemoBusiness(site)}
+                      className="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl text-xs font-black shadow-sm transition-all flex items-center gap-1.5"
+                    >
+                      <Briefcase className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Create Demo Business</span>
+                    </button>
+                  )}
+                </div>
 
                 <button
                   onClick={() => {
@@ -842,10 +857,23 @@ export const ConcreteDeploymentExplorer: React.FC<ConcreteDeploymentExplorerProp
                 className="px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 transition-colors flex items-center gap-1.5"
               >
                 <Copy className="w-3.5 h-3.5 text-slate-500" />
-                <span>Copy Exact Coordinates ({activeSiteForSimulation.latitude.toFixed(4)}, {activeSiteForSimulation.longitude.toFixed(4)})</span>
+                <span>Copy Exact Coordinates ({(activeSiteForSimulation.latitude ?? 0).toFixed(4)}, {(activeSiteForSimulation.longitude ?? 0).toFixed(4)})</span>
               </button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {onCreateDemoBusiness && (
+                  <button
+                    onClick={() => {
+                      setIsDeployModalOpen(false);
+                      onCreateDemoBusiness(activeSiteForSimulation);
+                    }}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-1.5"
+                  >
+                    <Briefcase className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Create Demo Business at this Site</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => {
                     setIsDossierExported(true);

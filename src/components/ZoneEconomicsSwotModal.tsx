@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Sparkles,
   ArrowUpRight,
+  Briefcase,
 } from 'lucide-react';
 
 interface ZoneEconomicsSwotModalProps {
@@ -31,6 +32,7 @@ interface ZoneEconomicsSwotModalProps {
   analysis: CommercialMarketAnalysis;
   onInquireProperty?: (property: VacantCommercialProperty) => void;
   onNavigateToTab?: (tab: 'sites' | 'realestate' | 'parking' | 'competitors') => void;
+  onCreateDemoBusiness?: (zone: OpportunityZone) => void;
 }
 
 export const ZoneEconomicsSwotModal: React.FC<ZoneEconomicsSwotModalProps> = ({
@@ -40,6 +42,7 @@ export const ZoneEconomicsSwotModal: React.FC<ZoneEconomicsSwotModalProps> = ({
   analysis,
   onInquireProperty,
   onNavigateToTab,
+  onCreateDemoBusiness,
 }) => {
   const [copiedSwot, setCopiedSwot] = useState<boolean>(false);
   const [activeSubSection, setActiveSubSection] = useState<'swot' | 'economics' | 'properties'>('swot');
@@ -154,7 +157,7 @@ ${zone.recommendedStrategy}
             <div>
               <span className="text-[10px] text-slate-300 block font-medium">Est. Annual Revenue</span>
               <div className="text-xl font-black text-amber-300">
-                ${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M
+                ${(((zone.predictedAnnualSalesVolumeUsd?.expected ?? 0) / 1000000)).toFixed(2)}M
               </div>
             </div>
             <div>
@@ -360,19 +363,19 @@ ${zone.recommendedStrategy}
                   <div className="p-3 bg-white rounded-lg border border-emerald-100 shadow-sm">
                     <span className="text-[10px] font-semibold text-slate-400 block">Conservative (Low)</span>
                     <span className="text-base font-black text-slate-700">
-                      ${(zone.predictedAnnualSalesVolumeUsd.low / 1000000).toFixed(2)}M
+                      ${(((zone.predictedAnnualSalesVolumeUsd?.low ?? 0) / 1000000)).toFixed(2)}M
                     </span>
                   </div>
                   <div className="p-3 bg-white rounded-lg border-2 border-emerald-500 shadow-md">
                     <span className="text-[10px] font-black text-emerald-600 block">Expected Baseline</span>
                     <span className="text-lg font-black text-emerald-700">
-                      ${(zone.predictedAnnualSalesVolumeUsd.expected / 1000000).toFixed(2)}M
+                      ${(((zone.predictedAnnualSalesVolumeUsd?.expected ?? 0) / 1000000)).toFixed(2)}M
                     </span>
                   </div>
                   <div className="p-3 bg-white rounded-lg border border-emerald-100 shadow-sm">
                     <span className="text-[10px] font-semibold text-slate-400 block">Aggressive (High)</span>
                     <span className="text-base font-black text-slate-700">
-                      ${(zone.predictedAnnualSalesVolumeUsd.high / 1000000).toFixed(2)}M
+                      ${(((zone.predictedAnnualSalesVolumeUsd?.high ?? 0) / 1000000)).toFixed(2)}M
                     </span>
                   </div>
                 </div>
@@ -506,7 +509,7 @@ ${zone.recommendedStrategy}
                         </div>
                         <div className="text-[11px] text-slate-500 flex justify-between">
                           <span>{pk.type}</span>
-                          <span>${pk.hourlyRateUsd}/hr</span>
+                          <span>${(pk.hourlyRateUsd ?? 0).toFixed(2)}/hr</span>
                         </div>
                       </div>
                     ))}
@@ -519,7 +522,20 @@ ${zone.recommendedStrategy}
 
         {/* Modal Bottom Action Footer */}
         <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 shrink-0">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {onCreateDemoBusiness && (
+              <button
+                onClick={() => {
+                  onClose();
+                  onCreateDemoBusiness(zone);
+                }}
+                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-lg text-xs font-black shadow-md transition-all flex items-center gap-1.5"
+              >
+                <Briefcase className="w-3.5 h-3.5 text-amber-300" />
+                <span>Create Demo Business in this Zone</span>
+              </button>
+            )}
+
             {onNavigateToTab && (
               <>
                 <button

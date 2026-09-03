@@ -5,6 +5,7 @@ import {
   VacantCommercialProperty,
   ParkingFacility,
   ConcreteDeploymentSite,
+  DemoBusiness,
 } from '../types';
 import {
   MapPin,
@@ -27,6 +28,7 @@ import {
   ArrowRight,
   Copy,
   Check,
+  Briefcase,
 } from 'lucide-react';
 
 interface CommercialMapProps {
@@ -38,6 +40,7 @@ interface CommercialMapProps {
   vacantProperties: VacantCommercialProperty[];
   parkingFacilities: ParkingFacility[];
   concreteDeploymentSites?: ConcreteDeploymentSite[];
+  demoBusinesses?: DemoBusiness[];
   selectedZoneId?: string;
   onSelectZone?: (zoneId: string) => void;
   onOpenZoneSwotModal?: (zone: OpportunityZone) => void;
@@ -46,6 +49,7 @@ interface CommercialMapProps {
   selectedSiteId?: string;
   onSelectSite?: (siteId: string) => void;
   onDeployToSite?: (site: ConcreteDeploymentSite) => void;
+  onSelectDemoBusiness?: (businessId: string) => void;
 }
 
 export const CommercialMap: React.FC<CommercialMapProps> = ({
@@ -57,6 +61,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
   vacantProperties = [],
   parkingFacilities = [],
   concreteDeploymentSites = [],
+  demoBusinesses = [],
   selectedZoneId,
   onSelectZone,
   onOpenZoneSwotModal,
@@ -65,6 +70,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
   selectedSiteId,
   onSelectSite,
   onDeployToSite,
+  onSelectDemoBusiness,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState<number>(13);
@@ -76,6 +82,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
 
   // Active Layer Toggles
   const [showDeploymentSites, setShowDeploymentSites] = useState<boolean>(true);
+  const [showDemoBusinesses, setShowDemoBusinesses] = useState<boolean>(true);
   const [showCompetitors, setShowCompetitors] = useState<boolean>(true);
   const [showZones, setShowZones] = useState<boolean>(true);
   const [showProperties, setShowProperties] = useState<boolean>(true);
@@ -84,7 +91,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
 
   // Selected item modal/popover
   const [activeItem, setActiveItem] = useState<{
-    type: 'competitor' | 'zone' | 'property' | 'parking' | 'site';
+    type: 'competitor' | 'zone' | 'property' | 'parking' | 'site' | 'demoBusiness';
     data: any;
   } | null>(null);
 
@@ -294,6 +301,20 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
           >
             <Store className="w-3 h-3 text-rose-600" />
             <span>Competitors ({competitors.length})</span>
+          </button>
+
+          {/* Demo Businesses Toggle */}
+          <button
+            onClick={() => setShowDemoBusinesses(!showDemoBusinesses)}
+            className={`map-control-btn flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-extrabold transition-all ${
+              showDemoBusinesses
+                ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xs ring-1 ring-indigo-400/40'
+                : 'text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Toggle created Demo Businesses on the map"
+          >
+            <Briefcase className="w-3 h-3 text-amber-300" />
+            <span>Demo Businesses ({demoBusinesses.length})</span>
           </button>
 
           {/* Opportunity Zones Toggle */}
@@ -549,7 +570,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
                   <Store className="w-3 h-3 text-rose-100" />
                   <span className="max-w-[100px] truncate">{comp.name}</span>
                   <span className="px-1 py-0.2 bg-rose-900/80 rounded text-[9px] font-semibold text-rose-200">
-                    ★ {comp.rating.toFixed(1)}
+                    ★ {(comp.rating ?? 4.5).toFixed(1)}
                   </span>
                 </button>
               </div>
@@ -644,6 +665,52 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
             );
           })}
 
+        {/* User-Created Demo Businesses Markers */}
+        {showDemoBusinesses &&
+          demoBusinesses.map((demo) => {
+            const { x, y } = latLngToPixel(demo.latitude, demo.longitude);
+            const isSelected = activeItem?.type === 'demoBusiness' && activeItem.data.id === demo.id;
+
+            return (
+              <div
+                key={`demo-biz-marker-${demo.id}`}
+                className="absolute transition-transform duration-150 z-35"
+                style={{
+                  left: `${x}px`,
+                  top: `${y}px`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
+                <button
+                  onClick={() => {
+                    setActiveItem({ type: 'demoBusiness', data: demo });
+                    if (onSelectDemoBusiness) onSelectDemoBusiness(demo.id);
+                  }}
+                  className={`interactive-marker-btn group relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl shadow-xl border transition-all ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-indigo-700 to-purple-700 text-white border-amber-400 scale-115 ring-4 ring-amber-400/40 z-40'
+                      : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-white/90 hover:scale-105'
+                  }`}
+                >
+                  <div className="w-5 h-5 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-black text-[10px] shadow-sm">
+                    <Briefcase className="w-3 h-3 text-slate-900" />
+                  </div>
+                  <div className="flex flex-col text-left leading-tight">
+                    <span className="font-extrabold text-[11px] text-white tracking-tight truncate max-w-[130px]">
+                      {demo.businessName}
+                    </span>
+                    <span className="text-[9px] text-amber-300 font-bold">
+                      DEMO • {demo.status}
+                    </span>
+                  </div>
+                  <span className="px-1 py-0.2 bg-white text-indigo-900 text-[9px] font-black rounded">
+                    ${((demo.projectedAnnualSalesUsd || 0) / 1000).toFixed(0)}k
+                  </span>
+                </button>
+              </div>
+            );
+          })}
+
         {/* 5. Parking & Mobility Markers */}
         {showParking &&
           parkingFacilities.map((park) => {
@@ -702,10 +769,17 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
                   <Car className="w-4 h-4" />
                 </div>
               )}
+              {activeItem.type === 'demoBusiness' && (
+                <div className="p-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-lg shadow-sm">
+                  <Briefcase className="w-4 h-4 text-amber-300" />
+                </div>
+              )}
               <div>
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                   {activeItem.type === 'site'
                     ? 'Concrete Deployment Point & Building'
+                    : activeItem.type === 'demoBusiness'
+                    ? 'Created Demo Business'
                     : activeItem.type === 'zone'
                     ? 'AI Opportunity Hotspot'
                     : activeItem.type === 'competitor'
@@ -715,7 +789,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
                     : 'Parking & Mobility Facility'}
                 </span>
                 <h4 className="font-bold text-slate-900 text-sm leading-snug">
-                  {activeItem.data.buildingName || activeItem.data.name || activeItem.data.title}
+                  {activeItem.data.businessName || activeItem.data.buildingName || activeItem.data.name || activeItem.data.title}
                 </h4>
               </div>
             </div>
@@ -739,11 +813,11 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
                 </span>
                 <div className="flex items-center justify-between mt-1 pt-1 border-t border-blue-200/50 text-[10px]">
                   <span className="font-mono text-slate-600">
-                    GPS: {activeItem.data.latitude.toFixed(5)}, {activeItem.data.longitude.toFixed(5)}
+                    GPS: {(activeItem.data.latitude ?? 0).toFixed(5)}, {(activeItem.data.longitude ?? 0).toFixed(5)}
                   </span>
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(`${activeItem.data.latitude.toFixed(6)}, ${activeItem.data.longitude.toFixed(6)}`);
+                      navigator.clipboard.writeText(`${(activeItem.data.latitude ?? 0).toFixed(6)}, ${(activeItem.data.longitude ?? 0).toFixed(6)}`);
                       setCopiedId(activeItem.data.id);
                       setTimeout(() => setCopiedId(null), 2000);
                     }}
@@ -949,7 +1023,7 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
                 </div>
                 <div>
                   <span className="text-slate-400 text-[10px] block">Hourly Rate</span>
-                  <span className="font-bold text-slate-900">${activeItem.data.hourlyRateUsd?.toFixed(2)}/hr</span>
+                  <span className="font-bold text-slate-900">${(activeItem.data.hourlyRateUsd ?? 0).toFixed(2)}/hr</span>
                 </div>
                 <div>
                   <span className="text-slate-400 text-[10px] block">EV Charging</span>
@@ -962,6 +1036,71 @@ export const CommercialMap: React.FC<CommercialMapProps> = ({
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Customer Walk Distance: ~{activeItem.data.distanceToZoneMeters} meters to shopping sector</span>
               </div>
+            </div>
+          )}
+
+          {activeItem.type === 'demoBusiness' && (
+            <div className="space-y-2.5 text-xs text-slate-700">
+              <div className="p-2 bg-indigo-50/80 rounded-lg border border-indigo-100">
+                <span className="font-extrabold text-slate-900 block text-xs">
+                  {activeItem.data.address}, {activeItem.data.city}
+                </span>
+                <span className="text-[11px] text-indigo-700 font-semibold block">
+                  Status: {activeItem.data.status} • Sector: {activeItem.data.sector || activeItem.data.businessType}
+                </span>
+                <div className="flex items-center justify-between mt-1 pt-1 border-t border-indigo-200/50 text-[10px]">
+                  <span className="font-mono text-slate-600">
+                    GPS: {(activeItem.data.latitude ?? 0).toFixed(5)}, {(activeItem.data.longitude ?? 0).toFixed(5)}
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${(activeItem.data.latitude ?? 0).toFixed(6)}, ${(activeItem.data.longitude ?? 0).toFixed(6)}`);
+                      setCopiedId(activeItem.data.id);
+                      setTimeout(() => setCopiedId(null), 2000);
+                    }}
+                    className="text-indigo-700 hover:text-indigo-900 font-bold flex items-center gap-1"
+                  >
+                    {copiedId === activeItem.data.id ? (
+                      <>
+                        <Check className="w-2.5 h-2.5 text-emerald-600" />
+                        <span className="text-emerald-600">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-2.5 h-2.5" />
+                        <span>Copy GPS</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200 text-center">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-semibold">Est. Sales</span>
+                  <span className="font-extrabold text-emerald-700">
+                    ${((activeItem.data.projectedAnnualSalesUsd || 0) / 1000).toFixed(0)}k/yr
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-semibold">Rent</span>
+                  <span className="font-extrabold text-slate-800">
+                    ${(activeItem.data.estimatedMonthlyRentUsd || 0).toLocaleString()}/mo
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-semibold">CapEx</span>
+                  <span className="font-extrabold text-indigo-700">
+                    ${((activeItem.data.estimatedCapExUsd || 0) / 1000).toFixed(0)}k
+                  </span>
+                </div>
+              </div>
+
+              {activeItem.data.notes && (
+                <p className="text-[11px] text-slate-500 italic bg-white p-2 rounded border border-slate-100">
+                  &quot;{activeItem.data.notes}&quot;
+                </p>
+              )}
             </div>
           )}
         </div>

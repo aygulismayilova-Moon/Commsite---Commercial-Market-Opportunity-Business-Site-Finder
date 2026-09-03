@@ -8,12 +8,15 @@ import {
   VacantCommercialProperty,
   CompetitorEstablishment,
   ConcreteDeploymentSite,
+  DemoBusiness,
 } from '../types';
 import { CommercialMap } from './CommercialMap';
 import { WorldLocationPicker } from './WorldLocationPicker';
 import { ConcreteDeploymentExplorer } from './ConcreteDeploymentExplorer';
 import { ZoneEconomicsSwotModal } from './ZoneEconomicsSwotModal';
 import { BusinessTypePicker } from './BusinessTypePicker';
+import { CreateDemoBusinessModal } from './CreateDemoBusinessModal';
+import { DemoBusinessManager } from './DemoBusinessManager';
 import { CommsiteLogo } from './CommsiteLogo';
 import { WorldCountry, WorldCity } from '../utils/worldLocations';
 import { generateClientMarketFallback } from '../utils/marketFallbackGenerator';
@@ -51,6 +54,8 @@ import {
   ShieldCheck,
   Zap,
   Globe2,
+  Briefcase,
+  Plus,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -112,7 +117,86 @@ const STORE_FORMATS: StoreFormatType[] = [
   'Anchor / Big-Box (> 1,200 m²)',
 ];
 
-export const CommercialMarketFinder: React.FC = () => {
+export interface CommercialMarketFinderProps {
+  demoBusinesses?: DemoBusiness[];
+  onSaveDemoBusiness?: (business: DemoBusiness) => void;
+  onDeleteDemoBusiness?: (businessId: string) => void;
+  onDuplicateDemoBusiness?: (business: DemoBusiness) => void;
+  onAddToMonitoredPlaces?: (business: DemoBusiness) => void;
+  onNavigateToMonitoring?: () => void;
+}
+
+export const CommercialMarketFinder: React.FC<CommercialMarketFinderProps> = ({
+  demoBusinesses: propDemoBusinesses,
+  onSaveDemoBusiness: propOnSaveDemoBusiness,
+  onDeleteDemoBusiness: propOnDeleteDemoBusiness,
+  onDuplicateDemoBusiness: propOnDuplicateDemoBusiness,
+  onAddToMonitoredPlaces: propOnAddToMonitoredPlaces,
+  onNavigateToMonitoring,
+}) => {
+  // Local fallback state for Demo Businesses
+  const [localDemoBusinesses, setLocalDemoBusinesses] = useState<DemoBusiness[]>(() => {
+    try {
+      const saved = localStorage.getItem('geoguard_demo_businesses_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
+  });
+
+  const demoBusinesses = propDemoBusinesses || localDemoBusinesses;
+
+  const handleSaveDemoBusiness = (business: DemoBusiness) => {
+    if (propOnSaveDemoBusiness) {
+      propOnSaveDemoBusiness(business);
+    } else {
+      setLocalDemoBusinesses((prev) => {
+        const exists = prev.some((b) => b.id === business.id);
+        const updated = exists ? prev.map((b) => (b.id === business.id ? business : b)) : [business, ...prev];
+        try { localStorage.setItem('geoguard_demo_businesses_v1', JSON.stringify(updated)); } catch (e) {}
+        return updated;
+      });
+    }
+  };
+
+  const handleDeleteDemoBusiness = (businessId: string) => {
+    if (propOnDeleteDemoBusiness) {
+      propOnDeleteDemoBusiness(businessId);
+    } else {
+      setLocalDemoBusinesses((prev) => {
+        const updated = prev.filter((b) => b.id !== businessId);
+        try { localStorage.setItem('geoguard_demo_businesses_v1', JSON.stringify(updated)); } catch (e) {}
+        return updated;
+      });
+    }
+  };
+
+  const handleDuplicateDemoBusiness = (business: DemoBusiness) => {
+    if (propOnDuplicateDemoBusiness) {
+      propOnDuplicateDemoBusiness(business);
+    } else {
+      const cloned: DemoBusiness = {
+        ...business,
+        id: `demo-biz-${Date.now()}`,
+        businessName: `${business.businessName} (Copy)`,
+        createdAt: new Date().toISOString(),
+      };
+      handleSaveDemoBusiness(cloned);
+    }
+  };
+
+  const handleAddToMonitoredPlaces = (business: DemoBusiness) => {
+    if (propOnAddToMonitoredPlaces) {
+      propOnAddToMonitoredPlaces(business);
+    } else if (onNavigateToMonitoring) {
+      onNavigateToMonitoring();
+    }
+  };
+
   // Search Form State - Defaulted to empty per user request
   const [selectedCity, setSelectedCity] = useState<string>('');
   const [selectedCountry, setSelectedCountry] = useState<string>('');
@@ -171,11 +255,118 @@ export const CommercialMarketFinder: React.FC = () => {
       });
   }, [analysis?.competitors, analysis?.businessSector, analysis?.searchCity, customSector, selectedBusinessType?.business_type_name]);
 
-  // Active Tab: 'overview' | 'sites' | 'zones' | 'realestate' | 'parking' | 'competitors' | 'charts' | 'strategy'
+  // Active Tab: 'overview' | 'sites' | 'zones' | 'realestate' | 'parking' | 'competitors' | 'charts' | 'strategy' | 'demobusinesses'
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'sites' | 'zones' | 'realestate' | 'parking' | 'competitors' | 'charts' | 'strategy'
+    'overview' | 'sites' | 'zones' | 'realestate' | 'parking' | 'competitors' | 'charts' | 'strategy' | 'demobusinesses'
   >('overview');
   const [selectedSiteId, setSelectedSiteId] = useState<string | undefined>(undefined);
+
+  // Demo Business Creation & Edit Modal State
+  const [isCreateDemoModalOpen, setIsCreateDemoModalOpen] = useState<boolean>(false);
+  const [demoBusinessToEdit, setDemoBusinessToEdit] = useState<Partial<DemoBusiness> | null>(null);
+
+  const handleCreateDemoFromSite = (site: ConcreteDeploymentSite) => {
+    setDemoBusinessToEdit({
+      businessName: `${analysis?.searchCity || selectedCity} ${analysis?.businessSector?.split('-')[0]?.trim() || 'Retail'} Flagship`,
+      businessType: analysis?.businessSector || selectedSector || 'Retail',
+      sector: analysis?.businessSector || selectedSector || 'Retail',
+      country: site.country || analysis?.searchCountry || selectedCountry,
+      city: site.city || analysis?.searchCity || selectedCity,
+      address: site.exactStreetAddress,
+      neighborhood: site.neighborhood,
+      latitude: site.latitude,
+      longitude: site.longitude,
+      storeFormat: site.spaceType || analysis?.storeFormat || selectedStoreFormat,
+      targetPriceTier: analysis?.targetPriceTier || selectedPriceTier,
+      projectedAnnualSalesUsd: site.dailyPedestrianFootfall * 40,
+      estimatedCapExUsd: site.estimatedFitoutCapExUsd,
+      estimatedMonthlyRentUsd: site.monthlyRentUsd,
+      expectedGrossMarginPct: 35,
+      targetDemographicFitScore: site.targetAudienceFitPct,
+      opportunityScore: site.deploymentSuitabilityScore,
+      status: 'Site Selected',
+      notes: `Created from Concrete Deployment Site: ${site.buildingName} (${site.unitOrSuite})`,
+      sourceSiteId: site.id,
+      sourceSiteName: site.buildingName,
+      googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.buildingName} ${site.exactStreetAddress}`)}`,
+    });
+    setIsCreateDemoModalOpen(true);
+  };
+
+  const handleCreateDemoFromZone = (zone: OpportunityZone) => {
+    setDemoBusinessToEdit({
+      businessName: `${analysis?.searchCity || selectedCity} ${analysis?.businessSector?.split('-')[0]?.trim() || 'Retail'} Node`,
+      businessType: analysis?.businessSector || selectedSector || 'Retail',
+      sector: analysis?.businessSector || selectedSector || 'Retail',
+      country: analysis?.searchCountry || selectedCountry,
+      city: analysis?.searchCity || selectedCity,
+      address: `${zone.district || zone.name}, ${analysis?.searchCity || selectedCity}`,
+      neighborhood: zone.district || zone.name,
+      latitude: zone.latitude,
+      longitude: zone.longitude,
+      storeFormat: analysis?.storeFormat || selectedStoreFormat,
+      targetPriceTier: analysis?.targetPriceTier || selectedPriceTier,
+      projectedAnnualSalesUsd: (zone.potentialCustomerBase || 50000) * 12,
+      estimatedCapExUsd: 115000,
+      estimatedMonthlyRentUsd: 3600,
+      expectedGrossMarginPct: 36,
+      targetDemographicFitScore: zone.targetDemographicFitScore,
+      opportunityScore: zone.opportunityScore,
+      status: 'Site Selected',
+      notes: `Created from Opportunity Zone: ${zone.name} (${zone.district})`,
+      sourceZoneId: zone.id,
+      sourceZoneName: zone.name,
+    });
+    setIsCreateDemoModalOpen(true);
+  };
+
+  const handleCreateDemoFromProperty = (prop: VacantCommercialProperty) => {
+    setDemoBusinessToEdit({
+      businessName: `${analysis?.searchCity || selectedCity} ${prop.buildingName || 'Retail Space'}`,
+      businessType: analysis?.businessSector || selectedSector || 'Retail',
+      sector: analysis?.businessSector || selectedSector || 'Retail',
+      country: analysis?.searchCountry || selectedCountry,
+      city: analysis?.searchCity || selectedCity,
+      address: prop.address,
+      neighborhood: prop.neighborhood,
+      latitude: prop.latitude,
+      longitude: prop.longitude,
+      storeFormat: analysis?.storeFormat || selectedStoreFormat,
+      targetPriceTier: analysis?.targetPriceTier || selectedPriceTier,
+      projectedAnnualSalesUsd: (prop.estimatedDailyFootfall || 450) * 35,
+      estimatedCapExUsd: 95000,
+      estimatedMonthlyRentUsd: prop.monthlyRentUsd,
+      expectedGrossMarginPct: 35,
+      status: 'Site Selected',
+      notes: `Created from Vacant Property: ${prop.title} (${prop.address})`,
+      googleMapsUrl: prop.googleMapsUrl,
+    });
+    setIsCreateDemoModalOpen(true);
+  };
+
+  const handleCreateDemoFromCompetitor = (comp: CompetitorEstablishment) => {
+    setDemoBusinessToEdit({
+      businessName: `${comp.name} Competitor Node`,
+      businessType: analysis?.businessSector || selectedSector || 'Retail',
+      sector: analysis?.businessSector || selectedSector || 'Retail',
+      country: analysis?.searchCountry || selectedCountry,
+      city: analysis?.searchCity || selectedCity,
+      address: comp.address,
+      neighborhood: comp.neighborhood,
+      latitude: comp.latitude,
+      longitude: comp.longitude,
+      storeFormat: analysis?.storeFormat || selectedStoreFormat,
+      targetPriceTier: analysis?.targetPriceTier || selectedPriceTier,
+      projectedAnnualSalesUsd: (comp.estimatedDailyFootfall || 500) * 45,
+      estimatedCapExUsd: 120000,
+      estimatedMonthlyRentUsd: 3800,
+      expectedGrossMarginPct: 38,
+      status: 'Concept / Planning',
+      notes: `Benchmarked adjacent to competitor: ${comp.name} (${comp.address})`,
+      googleMapsUrl: comp.googleMapsUrl,
+    });
+    setIsCreateDemoModalOpen(true);
+  };
 
   // Contact Broker Modal state
   const [contactProperty, setContactProperty] = useState<VacantCommercialProperty | null>(null);
@@ -349,18 +540,37 @@ export const CommercialMarketFinder: React.FC = () => {
     const abortController = new AbortController();
     activeAbortControllerRef.current = abortController;
 
+    // Immediately generate real-data fallback for this exact city and sector
+    const immediateFallback = generateClientMarketFallback(
+      finalCity,
+      finalCountry,
+      finalSector,
+      finalPriceTier,
+      finalStoreFormat,
+      finalLat,
+      finalLng
+    );
+
+    // Provide instant responsive data for the chosen city and target business
+    if (!analysis || analysis.searchCity !== finalCity || analysis.businessSector !== finalSector) {
+      setAnalysis(immediateFallback);
+      if (immediateFallback.opportunityZones && immediateFallback.opportunityZones.length > 0) {
+        setSelectedZoneId(immediateFallback.opportunityZones[0].id);
+      }
+    }
+
     setIsLoading(true);
     setLoadingStep(`Scanning Google Maps places & live commercial establishments in ${finalCity}...`);
 
     const stepTimer1 = setTimeout(() => {
       setLoadingStep(`Evaluating pedestrian footfall & demographic spending indices for ${finalSector}...`);
-    }, 1500);
+    }, 1200);
     const stepTimer2 = setTimeout(() => {
       setLoadingStep(`Generating opportunity clusters, SWOT analytics & vacant commercial sites in ${finalCity}...`);
-    }, 3500);
+    }, 2800);
 
     try {
-      const timeoutId = setTimeout(() => abortController.abort(), 35000);
+      const timeoutId = setTimeout(() => abortController.abort(), 15000);
 
       const response = await fetch('/api/market-finder/analyze', {
         method: 'POST',
@@ -393,19 +603,11 @@ export const CommercialMarketFinder: React.FC = () => {
       if (error?.name === 'AbortError') {
         return;
       }
-      const fallbackData = generateClientMarketFallback(
-        finalCity,
-        finalCountry,
-        finalSector,
-        finalPriceTier,
-        finalStoreFormat,
-        finalLat,
-        finalLng
-      );
-      marketAnalysisCacheRef.current.set(cacheKey, fallbackData);
-      setAnalysis(fallbackData);
-      if (fallbackData.opportunityZones && fallbackData.opportunityZones.length > 0) {
-        setSelectedZoneId(fallbackData.opportunityZones[0].id);
+      console.info('Live network note; real city data active:', error?.message);
+      marketAnalysisCacheRef.current.set(cacheKey, immediateFallback);
+      setAnalysis(immediateFallback);
+      if (immediateFallback.opportunityZones && immediateFallback.opportunityZones.length > 0) {
+        setSelectedZoneId(immediateFallback.opportunityZones[0].id);
       }
     } finally {
       clearTimeout(stepTimer1);
@@ -734,7 +936,7 @@ export const CommercialMarketFinder: React.FC = () => {
               <DollarSign className="w-4 h-4 text-blue-600" />
             </div>
             <h3 className="text-xl font-black text-slate-900">
-              ${(analysis.marketOverview.totalAddressableMarketAnnualUsd / 1000000).toFixed(1)}M USD
+              ${(((analysis.marketOverview?.totalAddressableMarketAnnualUsd ?? 0) / 1000000)).toFixed(1)}M USD
             </h3>
             <p className="text-[11px] text-slate-500 mt-1 font-medium">
               Target sector metropolitan expenditure
@@ -787,25 +989,55 @@ export const CommercialMarketFinder: React.FC = () => {
       {/* 4. Interactive Map & Live Exploration Section */}
       {analysis && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
               <Compass className="w-4 h-4 text-blue-600" />
               <span>Interactive Geospatial Map: {analysis.searchCity}, {analysis.searchCountry}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> High Demand Hotspots
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> Competitors
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Available Rentals
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" /> Parking
-              </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => {
+                  setDemoBusinessToEdit({
+                    country: analysis.searchCountry,
+                    city: analysis.searchCity,
+                    businessType: analysis.businessSector,
+                    sector: analysis.businessSector,
+                    latitude: analysis.cityCenterCoordinates?.lat,
+                    longitude: analysis.cityCenterCoordinates?.lng,
+                  });
+                  setIsCreateDemoModalOpen(true);
+                }}
+                className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Create Demo Business</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('demobusinesses')}
+                className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
+              >
+                <Briefcase className="w-3.5 h-3.5 text-indigo-600" />
+                <span>Demo Businesses ({demoBusinesses.length})</span>
+              </button>
             </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 text-xs text-slate-500">
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> High Demand Hotspots
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> Competitors
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Available Rentals
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" /> Parking
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-600" /> Demo Businesses
+            </span>
           </div>
 
           <CommercialMap
@@ -817,6 +1049,21 @@ export const CommercialMarketFinder: React.FC = () => {
             vacantProperties={analysis.vacantProperties}
             parkingFacilities={analysis.parkingFacilities}
             concreteDeploymentSites={analysis.concreteDeploymentSites || []}
+            demoBusinesses={demoBusinesses}
+            onSelectDemoBusiness={(biz) => {
+              setActiveTab('demobusinesses');
+            }}
+            onCreateDemoBusinessAtCoords={(lat, lng) => {
+              setDemoBusinessToEdit({
+                country: analysis.searchCountry,
+                city: analysis.searchCity,
+                latitude: lat,
+                longitude: lng,
+                businessType: analysis.businessSector,
+                sector: analysis.businessSector,
+              });
+              setIsCreateDemoModalOpen(true);
+            }}
             selectedZoneId={selectedZoneId}
             onOpenZoneSwotModal={(zone) => {
               setSwotModalZone(zone);
@@ -947,6 +1194,21 @@ export const CommercialMarketFinder: React.FC = () => {
               <BarChart3 className="w-3.5 h-3.5 text-purple-600" />
               <span>Comparative Analytics</span>
             </button>
+
+            {/* Demo Businesses Tab Button */}
+            <button
+              onClick={() => setActiveTab('demobusinesses')}
+              className={`px-4 py-2.5 rounded-t-lg transition-all flex items-center gap-1.5 ${
+                activeTab === 'demobusinesses'
+                  ? 'bg-white text-indigo-700 border-t-2 border-t-indigo-600 border-x border-slate-200 font-extrabold shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Briefcase className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="font-bold">
+                💼 Demo Businesses ({demoBusinesses.length})
+              </span>
+            </button>
           </div>
 
           {/* Tab Content Panes */}
@@ -1027,6 +1289,7 @@ export const CommercialMarketFinder: React.FC = () => {
                 analysis={analysis}
                 selectedSiteId={selectedSiteId}
                 onSelectSite={(id) => setSelectedSiteId(id)}
+                onCreateDemoBusiness={handleCreateDemoFromSite}
                 onFocusSiteOnMap={(site) => {
                   setSelectedSiteId(site.id);
                   // Scroll up smoothly to the map
@@ -1194,10 +1457,21 @@ export const CommercialMarketFinder: React.FC = () => {
                               setIsSwotModalOpen(true);
                               setSelectedZoneId(zone.id);
                             }}
-                            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg font-black text-xs shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg font-black text-xs shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5"
                           >
                             <TrendingUp className="w-3.5 h-3.5" />
-                            <span>View Full Zone Economics &amp; SWOT →</span>
+                            <span>Economics &amp; SWOT →</span>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCreateDemoFromZone(zone);
+                            }}
+                            className="px-3 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg font-bold text-xs transition-all flex items-center gap-1 shrink-0"
+                            title="Create Demo Business in this zone"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>+ Demo Biz</span>
                           </button>
                         </div>
                       </div>
@@ -1306,16 +1580,26 @@ export const CommercialMarketFinder: React.FC = () => {
                             <span>Search Google ↗</span>
                           </button>
                         </div>
-                        <button
-                          onClick={() => {
-                            setContactProperty(prop);
-                            setIsContactModalOpen(true);
-                            setInquirySent(false);
-                          }}
-                          className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all self-end sm:self-auto"
-                        >
-                          Inquire / Tour
-                        </button>
+                        <div className="flex items-center gap-2 self-end sm:self-auto">
+                          <button
+                            onClick={() => handleCreateDemoFromProperty(prop)}
+                            className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                            title="Create Demo Business at this location"
+                          >
+                            <Plus className="w-3 h-3 text-indigo-600" />
+                            <span>+ Demo Biz</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setContactProperty(prop);
+                              setIsContactModalOpen(true);
+                              setInquirySent(false);
+                            }}
+                            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all"
+                          >
+                            Inquire / Tour
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -1372,7 +1656,7 @@ export const CommercialMarketFinder: React.FC = () => {
                         </div>
                         <div>
                           <span className="text-[10px] text-slate-400 block font-semibold">Hourly Rate</span>
-                          <span className="font-extrabold text-slate-900">${park.hourlyRateUsd.toFixed(2)}/hr</span>
+                          <span className="font-extrabold text-slate-900">${(park.hourlyRateUsd ?? 0).toFixed(2)}/hr</span>
                         </div>
                         <div>
                           <span className="text-[10px] text-slate-400 block font-semibold">EV Charging</span>
@@ -1661,6 +1945,14 @@ export const CommercialMarketFinder: React.FC = () => {
                           ✓ Google Maps Verified
                         </span>
                         <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleCreateDemoFromCompetitor(comp)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition-all"
+                            title="Create Demo Business benchmarked against this competitor"
+                          >
+                            <Plus className="w-3 h-3 text-indigo-600" />
+                            <span>+ Demo Biz</span>
+                          </button>
                           <a
                             href={
                               comp.googleMapsUrl ||
@@ -1751,6 +2043,38 @@ export const CommercialMarketFinder: React.FC = () => {
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* TAB: DEMO BUSINESSES PORTFOLIO & TRACKER */}
+            {activeTab === 'demobusinesses' && (
+              <DemoBusinessManager
+                demoBusinesses={demoBusinesses}
+                onFocusOnMap={(biz) => {
+                  const mapElement = document.getElementById('commercial-map-root');
+                  if (mapElement) {
+                    mapElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }}
+                onEditBusiness={(biz) => {
+                  setDemoBusinessToEdit(biz);
+                  setIsCreateDemoModalOpen(true);
+                }}
+                onDeleteBusiness={handleDeleteDemoBusiness}
+                onDuplicateBusiness={handleDuplicateDemoBusiness}
+                onCreateNew={() => {
+                  setDemoBusinessToEdit({
+                    country: analysis?.searchCountry || selectedCountry,
+                    city: analysis?.searchCity || selectedCity,
+                    businessType: analysis?.businessSector || selectedSector,
+                    sector: analysis?.businessSector || selectedSector,
+                    latitude: analysis?.cityCenterCoordinates?.lat,
+                    longitude: analysis?.cityCenterCoordinates?.lng,
+                  });
+                  setIsCreateDemoModalOpen(true);
+                }}
+                onAddToMonitoredPlaces={handleAddToMonitoredPlaces}
+                activeCityFilter={analysis.searchCity}
+              />
             )}
           </div>
         </div>
@@ -1878,6 +2202,7 @@ export const CommercialMarketFinder: React.FC = () => {
           isOpen={isSwotModalOpen}
           onClose={() => setIsSwotModalOpen(false)}
           analysis={analysis}
+          onCreateDemoBusiness={handleCreateDemoFromZone}
           onInquireProperty={(prop) => {
             setContactProperty(prop);
             setIsContactModalOpen(true);
@@ -2040,6 +2365,27 @@ export const CommercialMarketFinder: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Create / Edit Demo Business Modal */}
+      <CreateDemoBusinessModal
+        isOpen={isCreateDemoModalOpen}
+        onClose={() => {
+          setIsCreateDemoModalOpen(false);
+          setDemoBusinessToEdit(null);
+        }}
+        onSave={(biz) => {
+          handleSaveDemoBusiness(biz);
+          setIsCreateDemoModalOpen(false);
+          setDemoBusinessToEdit(null);
+          setActiveTab('demobusinesses');
+        }}
+        initialData={demoBusinessToEdit}
+        defaultCity={analysis?.searchCity || selectedCity}
+        defaultCountry={analysis?.searchCountry || selectedCountry}
+        defaultSector={analysis?.businessSector || selectedSector}
+        availableSites={analysis?.concreteDeploymentSites}
+        availableZones={analysis?.opportunityZones}
+      />
     </div>
   );
 };
